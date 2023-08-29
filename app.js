@@ -5,6 +5,7 @@
 // ----------------------
 
 // Use Express as web engine
+const express = require("express");
 const Express = require(`express`);
 // Use Express Handlebars as template engine
 const {engine} = require(`express-handlebars`);
@@ -13,7 +14,7 @@ const {engine} = require(`express-handlebars`);
 // -----------------------------
 
 //Create the server
-const app = express();
+const app = express()
 const PORT = process.env.PORT || 8080;
 
 // Set folders paths: publc is for assets and views for pages
