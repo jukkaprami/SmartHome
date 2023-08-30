@@ -14,7 +14,7 @@ const {engine} = require(`express-handlebars`);
 // -----------------------------
 
 //Create the server
-const app = express()
+const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Set folders paths: publc is for assets and views for pages
