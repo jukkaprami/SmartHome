@@ -29,7 +29,7 @@ app.set(`view engine`, `handlebars`);
 // -----------
 
 app.get(`/`, (req, res) => {
-    let homePageData = {
+    let HomePageData = {
         'price': 31.25,
         'wind': 2,
         'temperature': 18
