@@ -28,7 +28,7 @@ app.set(`view engine`, `handlebars`);
 // URL ROUTES
 // -----------
 
-app.get(`/`, (req, res) => {
+app.get('/', (req, res) => {
     let homePageData = {
         'price': 31.25,
         'wind': 2,
@@ -39,13 +39,13 @@ app.get(`/`, (req, res) => {
 
 });
 
-app.get(`/hourly`,(req, res) => {
+app.get('/hourly',(req, res) => {
 
     let hourlyPageData = {
         'hour': 13,
         'price': 31.44
     };
-    res.render(`hourly`, hourlyPageData)
+    res.render('hourly', hourlyPageData)
 });
 
 // START THE LISTENER
