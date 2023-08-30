@@ -29,7 +29,13 @@ app.set(`view engine`, `handlebars`);
 // -----------
 
 app.get(`/`, (req, res) => {
+    let homePageData = {
+        'price': 31.25,
+        'wind': 2,
+        'temperature': 18
+    }
     res.render(`index`)
+
 });
 
 // START THE LISTENER
