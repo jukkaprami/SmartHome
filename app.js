@@ -29,13 +29,23 @@ app.set(`view engine`, `handlebars`);
 // -----------
 
 app.get(`/`, (req, res) => {
-    let HomePageData = {
+    let homePageData = {
         'price': 31.25,
         'wind': 2,
         'temperature': 18
-    }
-    res.render(`index`)
+    };
 
+    res.render(`index`, homePageData )
+
+});
+
+app.get(`/hourly`,(req, res) => {
+
+    let hourlyPageData = {
+        'hour': 13,
+        'price': 31.44
+    };
+    res.render(`hourly`, hourlyPageData)
 });
 
 // START THE LISTENER
