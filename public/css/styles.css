@@ -17,21 +17,24 @@ h1 {font-size: 48px;}
 }
 
 table {
-    border-collapse: collapse;
+
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    border-spacing: 0;
+    border-collapse: separate;
+    overflow: hidden;
 }
 
-    tr:nth-child(even){background-color:dimgrey
+    tr:nth-child(even){background-color:rgb(242, 226, 8)
 }
 
 th {
     padding: 10px;
-    border: 1px solid #ddd;
     background-color:rgba(red, green, blue, alpha);
-    color:#ddd
+    color:#0d0d0d
 }
 
 td {
-    border: 1px solid #ddd;
     padding: 8px;
 }
 

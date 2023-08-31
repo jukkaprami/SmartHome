@@ -12,3 +12,41 @@
     </tr>
     {{/each}}
 </table>
+
+<!DOCTYPE html>
+<html>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+
+<body>
+<div id="myChart" style="width:100%; max-width:600px; height:500px;"></div>
+
+<script>
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+
+// Set Data
+const data = google.visualization.arrayToDataTable([
+  ['Aika', 'hinta (kwh/s)'],
+  ['13',31.44],
+  ['14',32.10],
+  ['15',30.50],
+  ['16',29.99],
+  ['17',29.30]
+]);
+
+// Set Options
+const options = {
+  title:'Pörssisähkön tuntihinnat'
+};
+
+// Draw
+const chart = new google.visualization.BarChart(document.getElementById('myChart'));
+chart.draw(data, options);
+
+}
+</script>
+
+</body>
+</html>

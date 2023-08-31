@@ -55,7 +55,9 @@ app.get('/hourly',(req, res) => {
         {'hour': 15,
         'price': 30.50},
         {'hour': 16,
-        'price': 29.99}
+        'price': 29.99},
+        {'hour': 17,
+        'price': 29.30}
     ]
     };
 
