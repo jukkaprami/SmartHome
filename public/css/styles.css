@@ -16,3 +16,23 @@ h1 {font-size: 48px;}
     color:cornflowerblue;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+    tr:nth-child(even){background-color:dimgrey
+}
+
+th {
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color:rgba(red, green, blue, alpha);
+    color:#ddd
+}
+
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+   
