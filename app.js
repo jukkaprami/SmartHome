@@ -38,6 +38,7 @@ app.get('/', (req, res) => {
         'temperature': 18
     };
 
+    // Render index data to
     res.render(`index`, homePageData )
 
 });
@@ -46,7 +47,7 @@ app.get('/', (req, res) => {
 app.get('/hourly',(req, res) => {
 
     // Data will be presented in a table. To loop all rows we need a key for table and for column data
-    let hourlyPageData = { 'tabledata': [
+    let hourlyPageData = { 'tableData': [
         {'hour': 13,
         'price': 31.44},
         {'hour': 14,
@@ -57,6 +58,8 @@ app.get('/hourly',(req, res) => {
         'price': 29.99}
     ]
     };
+
+    
     res.render('hourly', hourlyPageData)
 });
 
