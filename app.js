@@ -58,8 +58,7 @@ app.get('/hourly',(req, res) => {
         'price': 29.99},
         {'hour': 17,
         'price': 29.30}
-    ]
-    };
+    ]};
 
     
     res.render('hourly', hourlyPageData)
