@@ -73,7 +73,7 @@ app.get('/chart',(req,res) => {
     let jsonTableHours  = JSON.stringify(tableHours)
     let tablePrices = [31.44, 32.10, 30.50, 29.99, 29.30];
     let jsonTablePrices = JSON.stringify(tablePrices)
-    let chartPageData = {'hours': jsonTableHours, 'prices': jsonTablePrices };
+    let chartPageData = { 'hours': jsonTableHours, 'prices': jsonTablePrices };
 
     res.render('chart', chartPageData)
 
@@ -86,7 +86,7 @@ app.get('/test',(req,res) => {
     let jsonTableHours = JSON.stringify(tableHours)
     let tablePrices = [31.44, 32.10, 30.50, 29.99, 29.30];
     let jsonTablePrices = JSON.stringify(tablePrices)
-    let chartPageData = {'hours': jsonTableHours, 'prices': jsonTablePrices };
+    let chartPageData = { 'hours': jsonTableHours, 'prices': jsonTablePrices };
 
     res.render('testCJSv4', chartPageData)
 
