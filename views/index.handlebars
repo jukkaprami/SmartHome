@@ -3,3 +3,18 @@
 <h1 class="expensive">{{price}} snt/kwh</h1>
 <h2>Tuuli {{wind}} m/s</h2>
 <h2>Lämpötila {{temperature}}</h2>
+<h2>
+    <br>
+    <br>
+</h2>
+<h2 id="clock"></h2>
+<script>
+    showTime() => {
+    let now = new Date();
+    let hourValue = now.getHours();
+    let minuteValue = now.getMinutes();
+    let secondValue = now.getSeconds();
+    document.getElementById('clock').innerHTML =hourValue + ""."" + minuteValue + ""."" + secondValue + "."
+
+    }
+<script>
