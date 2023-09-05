@@ -65,6 +65,33 @@ app.get('/hourly',(req, res) => {
     res.render('hourly', hourlyPageData)
 });
 
+// Route to hourly chart page
+app.get('/chart',(req,res) => {
+
+    //Data will be presented in bart chart. Data will will be sent as JSON array to get it work handlebars page
+    let tableHours = [13, 14, 15, 16, 17];
+    let jsonTableHours  = JSON.stringify(tableHours)
+    let tablePrices = [31.44, 32.10, 30.50, 29.99, 29.30];
+    let jsonTablePrices = JSON.stringify(tablePrices)
+    let chartPageData = {'hours': jsonTableHours, 'prices': jsonTablePrices };
+
+    res.render('chart', chartPageData)
+
+});
+
+app.get('/test',(req,res) => {
+
+    // Data will be presented in a bar chart. Data will be sent as JSON array
+    let tableHours = [13, 14, 15, 16, 17];
+    let jsonTableHours = JSON.stringify(tableHours)
+    let tablePrices = [31.44, 32.10, 30.50, 29.99, 29.30];
+    let jsonTablePrices = JSON.stringify(tablePrices)
+    let chartPageData = {'hours': jsonTableHours, 'prices': jsonTablePrices };
+
+    res.render('testCJSv4', chartPageData)
+
+});
+
 // START THE LISTENER
 app.listen(PORT);
 console.log(`Server started and it will listen TCP port`, PORT);
