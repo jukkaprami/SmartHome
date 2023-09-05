@@ -49,15 +49,15 @@ app.get('/hourly',(req, res) => {
     // Data will be presented in a table. To loop all rows we need a key for table and for column data
     let hourlyPageData = { 'tableData': [
         {'hour': 13,
-        'price': 31.44},
+        'price': 29.30},
         {'hour': 14,
-        'price': 32.10},
+        'price': 29.99},
         {'hour': 15,
         'price': 30.50},
         {'hour': 16,
-        'price': 29.99},
+        'price': 31.00},
         {'hour': 17,
-        'price': 29.30}
+        'price': 31.50}
     ]};
 
     
@@ -70,7 +70,7 @@ app.get('/chart',(req,res) => {
     //Data will be presented in bart chart. Data will will be sent as JSON array to get it work handlebars page
     let tableHours = [13, 14, 15, 16, 17];
     let jsonTableHours  = JSON.stringify(tableHours)
-    let tablePrices = [31.44, 32.10, 30.50, 29.99, 29.30];
+    let tablePrices = [29.30, 29.99, 30.50, 31.00, 31.50];
     let jsonTablePrices = JSON.stringify(tablePrices)
     let chartPageData = { 'hours': jsonTableHours, 'prices': jsonTablePrices };
 
@@ -83,7 +83,7 @@ app.get('/test',(req,res) => {
     // Data will be presented in a bar chart. Data will be sent as JSON array
     let tableHours = [13, 14, 15, 16, 17];
     let jsonTableHours = JSON.stringify(tableHours)
-    let tablePrices = [31.44, 32.10, 30.50, 29.99, 29.30];
+    let tablePrices = [29.30, 29.99, 30.50, 31.00, 31.50];
     let jsonTablePrices = JSON.stringify(tablePrices)
     let chartPageData = { 'hours': jsonTableHours, 'prices': jsonTablePrices };
 
