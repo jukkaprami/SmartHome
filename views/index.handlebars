@@ -10,20 +10,25 @@
 </h2>
 <h2 onload=showTime() id="clock"></h2>
 <script>
-    function showTime(){
+    function showTime() {
+    // Create a date object containing current timestamp
     var date = new date();
-    var h = date.getHours(); // 0 - 23
-    var m = date.getMinutes(); // 0 - 59
-    var s = date.getSeconds(); // 0 - 59
-    
+
+    // Separate hours, minutes and seconds
+    var h = date.getHours();
+    var m = date.getMinutes();
+    var s = date.getSeconds();
+
+    // Add leading zeros    
     h = (h < 10) ? "0" + h : h;
     m = (m < 10) ? "0" + m : m;
     s = (s < 10) ? "0" + s : s;
 
-    var time = h + ":" + m + ":" + s;
-    //document.getElementById("clock").innerText = time;
-    //document.getElementById("clock").textContent = time;
+    // Build a string for time and put it into h2 named clock
+    var time = h + "." + m + "." + s;
     document.getElementById("clock").innerHTML = time
+    
+    // After 1000 ms (1 s) call showTime again
     setTimeout(showTime, 1000);
 
     };
