@@ -9,12 +9,13 @@
 </h2>
 <h2 id="clock"></h2>
 <script>
-    showTime() => {
+    const showTime = () => {
     let now = new Date();
     let hourValue = now.getHours();
     let minuteValue = now.getMinutes();
     let secondValue = now.getSeconds();
     document.getElementById('clock').innerHTML =hourValue + ""."" + minuteValue + ""."" + secondValue + "."
+    setTimeout(showTime, 1000)
 
     }
 <script>
