@@ -9,8 +9,12 @@ const express = require('express');
 // Use Express Handlebars as template engine
 const {engine} = require('express-handlebars');
 
-// Get external data with node-fetch
-const fetch =require('node-fetch');
+// Get external data with node-fetch for version 2.x
+//This version should be installed as follows: npm install node-fetch@2
+
+/* Get external data with node-fetch for version 3.x
+import fetch from 'node-fetch';*/
+
 
 // EXPRESS APPLICATION SETTINGS
 // ----------------------------
@@ -93,6 +97,38 @@ app.get('/test',(req, res) => {
     res.render('testCJSv4', chartPageData)
 
 });
+
+const LATEST_PRICES_ENDPOINT = 'https://api.porssisahko.net/v1/latest-prices.json';
+
+async function fetchLatestPriceData() {
+  const response = await fetch(LATEST_PRICES_ENDPOINT);
+
+  return response.json();
+}
+
+function getPriceForDate(date, prices) {
+  const matchingPriceEntry = prices.find(
+    (price) => new Date(price.startDate) <= date && new Date(price.endDate) > date
+  );
+
+  if (!matchingPriceEntry) {
+    throw 'Price for the requested date is missing';
+  }
+
+  return matchingPriceEntry.price;
+}
+
+// Note that it's enough to call fetchLatestPriceData() once in 12 hours
+const { prices } = await fetchLatestPriceData();
+
+try {
+  const now = new Date();
+  const price = getPriceForDate(now, prices);
+
+  console.log(`Hinta nyt (${now.toISOString()}): ${price} snt / kWh (sis. alv)`);
+} catch (e) {
+  console.error(`Hinnan haku epäonnistui, syy: ${e}`);
+}
 
 
 
