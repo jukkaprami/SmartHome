@@ -9,6 +9,9 @@ const express = require('express');
 // Use Express Handlebars as template engine
 const {engine} = require('express-handlebars');
 
+// Get external data with node-fetch
+const fetch =require('node-fetch');
+
 // EXPRESS APPLICATION SETTINGS
 // ----------------------------
 
