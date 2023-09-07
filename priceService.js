@@ -6,6 +6,7 @@ async function fetchLatestPriceData() {
   return response.json();
 }
 
+console.log(jsonData)
 function getPriceForDate(date, prices) {
   const matchingPriceEntry = prices.find(
     (price) => new Date(price.startDate) <= date && new Date(price.endDate) > date
