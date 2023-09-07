@@ -34,7 +34,7 @@
 
 <script>
     const xValues = ["13", "14", "15", "16", "17"];
-    const yValues = [29.30, 29.99, 30.50, 31.00, 31.50];
+    const yValues = [10, 8, 10, 14, 15];
     const barColors = ["blue", "green", "blue", "red", "red"];
 
     new Chart("hourlyChartChartJS", {
@@ -69,11 +69,11 @@
     function drawChart() {
         var data = google.visualization.arrayToDataTable([
             ["Tunti", "Hinta snt/kwh", { role: "style" }],
-            ["13", 29.30, "blue"],
-            ["14", 29.99, "green"],
-            ["15", 30.50, "blue"],
-            ["16", 31.00, "red"],
-            ["17", 31.50, "red"]
+            ["13", 10, "blue"],
+            ["14", 8, "green"],
+            ["15", 10, "blue"],
+            ["16", 14, "red"],
+            ["16", 15, "red"]
         ]);
 
         var view = new google.visualization.DataView(data);

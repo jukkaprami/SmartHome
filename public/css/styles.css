@@ -1,41 +1,55 @@
+/* Common settings for the whole page are defined in the body*/
 body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:Arial, Helvetica, sans-serif;
+    background-color: #cbcbcb;
 }
 
 h1 {font-size: 48px;}
 
+/* CSS classes for colors desribing prices*/
 .expensive {
-    color:crimson;   
+    color: crimson;
 }
 
 .cheap {
-    color:darkgreen;
+    color: darkgreen;
 }
 
 .average {
-    color:cornflowerblue;
+    color: cornflowerblue;
 }
 
+/* Table settings */
 table {
-
-    border-radius: 10px;
+    border-radius: 10px; /* Rounded corners */
     border: 1px solid #ddd;
     border-spacing: 0;
     border-collapse: separate;
+
+    /* Prevent table data and header background color exceeding table boundaries
+    This is needed because table has rounded corners */
     overflow: hidden;
 }
 
-    tr:nth-child(even){background-color:rgb(242, 226, 8)
-}
+/* Set every other row (even) to light gray backrgound*/
+tr:nth-child(even){background-color: #989898;}
 
+/* Table header column settings */
 th {
     padding: 10px;
-    background-color:rgba(red, green, blue, alpha);
-    color:#0d0d0d
+    color: #1b1b1b;
+    background-color: rgba(238, 255, 2, 0.511);
 }
 
+/* Table data column settings*/
 td {
     padding: 8px;
+    color: white;
 }
 
-   
+/* Pages that show a digital clock uses this class definition*/
+.digitalClock {
+    font-size: xx-large;
+    font-family: 'Seven Segment';
+    color: green;
+}  
