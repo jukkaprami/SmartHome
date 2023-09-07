@@ -35,7 +35,7 @@
 <script>
     const xValues = ["13", "14", "15", "16", "17"];
     const yValues = [10, 8, 10, 14, 15];
-    const barColors = ["blue", "green", "blue", "red", "red"];
+    const barColors = ["blue", "green", "blue", "black", "black"];
 
     new Chart("hourlyChartChartJS", {
         type: "bar",
@@ -72,8 +72,8 @@
             ["13", 10, "blue"],
             ["14", 8, "green"],
             ["15", 10, "blue"],
-            ["16", 14, "red"],
-            ["17", 15, "red"]
+            ["16", 14, "black"],
+            ["17", 15, "black"]
         ]);
 
         var view = new google.visualization.DataView(data);
