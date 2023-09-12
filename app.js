@@ -106,7 +106,9 @@ app.get('/callback', (req, res) => {
     }
 
     res.render('callbackesim', priceData);
-    
+
+});
+
 // START THE LISTENER
 app.listen(PORT);
 console.log('Server started and it will listen TCP port', PORT);
