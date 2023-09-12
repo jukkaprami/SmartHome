@@ -1,0 +1,25 @@
+<h1>Kuluttajahinta euroina</h1>
+<h2>Tukkuhinta on nyt {{retailPrice}} euroa.</h2>
+
+<p>Kuluttajahinta lasketaan tukkuhinnasta ja siihen lisätään ALV:</p>
+<h2 id="cPrice"></h2>
+
+{{!-- Seuraava skritpit päivittää cPrice-elementin callback funktiota käyttämällä --}}
+<script>
+
+// Tämä funktio muuttaa cPrice-elementin tekstiä 
+function showPrice(calculatedPrice) {
+  document.getElementById("cPrice").innerHTML = calculatedPrice;
+}
+
+/* Tämä funktio laskee tukkuhinnasta kuluttajahinnan (ei sisällä sähkönmyyjän palkkiota)
+funktio saa argumentikseen toisen funktion (cbfuction) jota se käyttää tuloksen esittämiseen */
+
+function calculateConsumerPrice(retailPrice, tax, cbfunction) {
+  let price = retailPrice*tax
+  cbfunction(price);
+}
+
+// Varsinaisessa funktiokutsussa ei käytetä callback-funktion showPrice sulkeita!
+calculateConsumerPrice({{retailPrice}}, {{taxMultiplier}}, showPrice);
+</script>

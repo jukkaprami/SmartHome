@@ -98,6 +98,15 @@ app.get('/test',(req, res) => {
 
 });
 
+app.get('/callback', (req, res) => {
+
+    let priceData = {
+        'retailPrice': 24.05,
+        'taxMultiplier': 1.24
+    }
+
+    res.render('callbackesim', priceData);
+    
 // START THE LISTENER
 app.listen(PORT);
 console.log('Server started and it will listen TCP port', PORT);
