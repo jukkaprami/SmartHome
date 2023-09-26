@@ -34,9 +34,9 @@ cron.schedule('*/5 15 * * *', () => {
     let dateStr = timestamp.toLocaleDateString(); // Take datepart of the timestamp
 
     // If the date of last sucessfull fetch is not the current day, fetch data
-    if (lastFetchedDate != dateStr) {
+    if (lastFethcedDate != dateStr) {
       getPrices.fetchLatestPriceData().then((json) => {
-        //loop trough prices data and pick starDate and price elements
+        //loop trough prices data and pick startDate and price elements
         json.prices.forEach(async (element) => {
           let values = [element.startDate, element.price];
 
@@ -49,7 +49,7 @@ cron.schedule('*/5 15 * * *', () => {
           console.log('The following data has been saved', res.rows[0]);
         });
       });
-      lastFetchedDate = dateStr; // Set fetch date to current date
+      lastFetcheDate = dateStr; // Set fetch date to current date
     } else {
       console.log('Data has been successfully retrieved earlier today');
     }
