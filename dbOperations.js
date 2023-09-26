@@ -2,7 +2,7 @@
 // ====================================================
 
 // LIBRARIES AND MODULES
-const Pool = require('pg').Pool
+import {Pool} from 'pg' // ATTENTION this is ES module
 
 // Create a pool object with connection details, by default 10 concurrent users
 const pool = new Pool({
