@@ -13,7 +13,7 @@ const pool = new Pool({
   port: 5432,
 });
 
-const sqlClause = 'SELECT * from public.hourly_price';
+let sqlClause = 'SELECT * from public.hourly_price';
 let query1 = pool.query(sqlClause, (error, results) => {
     if (error) {
         throw error;
