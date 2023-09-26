@@ -2,7 +2,7 @@
 // ---------------------
 
 // The pg-pool library for PostgreSQL Server
-const Pool = require('pg').Pool;
+const Pool = require('pg-pool').Pool;
 
 // The node-cron library to schedule API call to porssisahko.net
 const cron = require('node-cron');
