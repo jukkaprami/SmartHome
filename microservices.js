@@ -15,7 +15,7 @@ const getPrices = require('./getNewPrices');
 
 // Create a new pool for Postgres connections
 const pool = new Pool({
-  user: 'postgres', // In production allways create a new user for the app
+  user: 'postgres', // In production always create a new user for the app
   password: 'Q2werty',
   host: 'localhost', // Or localhost or 127.0.0.1 if in the same computer
   database: 'smarthome',
