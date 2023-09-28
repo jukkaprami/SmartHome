@@ -55,7 +55,7 @@ cron.schedule('*/5 15 * * *', () => {
         });
       });
       lastFetchedDate = dateStr; // Set fetch date to current date
-      console.log('Fethed at', lastFetchedDate)
+      console.log('Fetched at', lastFetchedDate)
     } else {
       console.log('Data has been successfully retrieved earlier today');
     }
