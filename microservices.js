@@ -1,3 +1,6 @@
+// A MINIMAL SERVICE TO FETCH PRICE DATA AND SAVE IT INTO POSTGRESQL DATABASE
+// ===========================================================================
+
 // LIBRARIES AND MODULES
 // ---------------------
 
