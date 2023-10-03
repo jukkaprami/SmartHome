@@ -8,7 +8,7 @@ let entry = operation + ' ' + status + ' @ ' + isoTimeStamp + '\n';
 
 console.log(entry);
 
-fs.appendFile('.dataOperations.log', entry, (err) => {
+fs.appendFile('dataOperations.log', entry, (err) => {
     if (err) {
         console.log(err)
     }
