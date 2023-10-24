@@ -2,7 +2,7 @@
 // ===============================
 
 // Import the module or library to be tested
-const functionsToTest = require('./functionsToTest');
+const functionsToTest = require('./functionToTest');
 
 // Test function uses a callback, don't forget to put () 
 test('bmi with height 1.7 and weight 70 eq 24', () => {
