@@ -1,50 +1,80 @@
+// A CJS LIBRARY TO CALCULATE BASIC STATISTICAL CHARASTERISTICS OF AN ARRAY
+// ========================================================================
+
+// LIBRARIES
+// ---------
+
+// Statistical operations are based on math.js library
+// It is not built-in Math class, need to install this 1st
+const mathjs = require('mathjs'); 
+
+// A class to calculate statistical characteristics at given precision
 class ArrayStats {
     constructor(array, decimals) {
         this.array = array;
         this.decimals = decimals;
     }
 
-    average() {
-        let avg = 0; // Alustetaan keskiarvo 0:ksi
-        let sum = 0; // Alustetaan summa 0:ksi
 
-        // Käydään alkiot läpi silmukassa
-        for (let index = 0; index < this.array.length; index++) {
-            const element = this.array[index];
-            sum = sum + element
-            
-        }
+    // Average ie aritmeettinen keskiarvo 
+    mean() {
+        const arrayMean = mathjs.mean(this.array);
+        const roundedMean = mathjs.round(arrayMean, this.decimals);
+        return roundedMean
 
-        // Keskiarvo on lukujen summa jaettuna lukumäärällä
-        avg = sum / this.array.length;
-        return avg; // Palautetaan laskettu keskiarvo
-        } 
 
-    
-    variance() {
-        const arrayVarianve = mathjs.variance(this.array);
-        const roundedArrayVariance = mathjs.round(arrayVarianve, this.decimals);
+    }
+
+    /* Median ie keskiluku eli järjestetyn lukujonon keskimmäinen arvo 
+    (pariton määrä lukuja) tai kahden keskimmäisen arvon keskiarvo 
+    (parillinen määrä lukuja)
+    */
+    median() {
+        const arrayMedian = mathjs.median(this.array);
+        const roudedArrayMedian = mathjs.round(arrayMedian, this.decimals);
+        return roudedArrayMedian;
+
+    }
+    // Mode ie tyyppiarvo eli luku, joka esiintyy eniten lukujoukossa
+    mode() {
+        const arrayMode = mathjs.mode(this.array);
+        return arrayMode
+
+    }
+
+    // Variation of popultation ie populaation varianssi
+    populationVariance() {
+        const arrayVariance = mathjs.variance(this.array, 'uncorrected');
+        const roundedArrayVariance = mathjs.round(arrayVariance, this.decimals);
         return roundedArrayVariance;
 
     }
-    stdDev() {
-        const arrayDeviation = mathjs.std(this.array);
-        const roundeArrayDeviation = mathjs.round(arrayDeviation, this.decimals);
-        return roundeArrayDeviation;
+
+    // Standard deviation of population ie populaation keskihajonta
+    populationStdDev() {
+        const arrayDeviation = mathjs.std(this.array, 'uncorrected');
+        const roundedArrayDeviation = mathjs.round(arrayDeviation, this.decimals);
+        return roundedArrayDeviation;
 
     }
 
+    // Maximum value of array ie maksimi tai suurin arvo
     max() {
-        const arrayMax= mathjs.max(this.array);
-        const roundeArrayMax = mathjs.round(arrayMax, this.decimals);
-        return roundeArrayMax;
+        const arrayMax = mathjs.max(this.array);
+        const roundedArrayMax = mathjs.round(arrayMax, this.decimals);
+        return roundedArrayMax;
 
     }
 
+    // Minimum value of array ie minimi tai pienin arvo
     min() {
-        const arrayMin= mathjs.min(this.array);
-        const roundeArrayMin = mathjs.round(arrayMin, this.decimals);
-        return roundeArrayMin;
+        const arrayMin = mathjs.min(this.array);
+        const roundedArrayMin = mathjs.round(arrayMin, this.decimals);
+        return roundedArrayMin;
     }
 
+}
+
+module.exports = {
+    ArrayStats
 }

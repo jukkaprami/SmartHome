@@ -26,18 +26,26 @@ test('Mode should be array element 2', () => {
     expect(statToTest2.mode()).toEqual([2]);
 });
 
-// Test median ie middlemost element in sorted array, odd elements, test # 3
-const testArray3 = [1, 2, 2, 3, 4];
+// Test mode is most common value, there are several values test # 3
+const testArray3 = [1, 2, 2, 3, 3, 4];
 const statToTest3 = new stats.ArrayStats(testArray3, numberOfDecimals);
 
-test('Median should be 2', () => {
-    expect(statToTest3.median()).toBe(2);
+test('2 most common numbers should be 2 and 3', () => {
+    expect(statToTest3.mode()).toEqual([2, 3]);
 });
 
-// Test median ie average of 2 middlemost element in sorted array, even elements test # 4
-const testArray4 = [1, 2, 2, 3, 3, 4];
+// Test median ie middlemost element in sorted array, odd elements, test # 4
+const testArray4 = [1, 2, 2, 3, 4];
 const statToTest4 = new stats.ArrayStats(testArray4, numberOfDecimals);
 
+test('Median should be 2', () => {
+    expect(statToTest4.median()).toBe(2);
+});
+
+// Test median ie average of 2 middlemost element in sorted array, even elements test # 5
+const testArray5 = [1, 2, 2, 3, 3, 4];
+const statToTest5 = new stats.ArrayStats(testArray5, numberOfDecimals);
+
 test('Median should be 2.5', () => {
-    expect(statToTest4.median()).toBe(2.5);
+    expect(statToTest5.median()).toBe(2.5);
 });
