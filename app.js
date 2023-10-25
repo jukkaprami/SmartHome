@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
     };
 
     cprice.getCurrentPrice().then((resultset) => {
+        console.log(resultset.rows[0])
         homePageData.price = resultset.rows[0]
     }) 
 
