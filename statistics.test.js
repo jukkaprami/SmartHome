@@ -49,3 +49,11 @@ const statToTest5 = new stats.ArrayStats(testArray5, numberOfDecimals);
 test('Median should be 2.5', () => {
     expect(statToTest5.median()).toBe(2.5);
 });
+
+// Test variation of population test # 6
+const testArray6 = [1, 2, 2, 3, 3, 4];
+const statToTest6 = new stats.ArrayStats(testArray6, numberOfDecimals);
+
+test('Variation of population should be 0.92', () => {
+    expect(statToTest6.populationVariance()).toBeCloseTo(0.9, 1);
+});
