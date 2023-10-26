@@ -21,7 +21,7 @@ const pool = new Pool({
 
   // Function for running SQL operations asyncronously
   const getCurrentPrice = async () => {
-    let resultset = await pool.query('SELECT hinta FROM public.current_prices');
+    let resultset = await pool.query('SELECT price FROM public.current_prices');
     return resultset;
   }
 

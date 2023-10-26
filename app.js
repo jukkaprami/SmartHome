@@ -44,13 +44,15 @@ app.get('/', (req, res) => {
     };
 
     cprice.getCurrentPrice().then((resultset) => {
-        console.log(resultset.rows[0])
-        homePageData.price = resultset.rows[0]
-    }) 
-
-    // Render index.handlebars and send dynamic data to the page
+        
+        // Set the price value according to the query
+        homePageData.price = resultset.rows[0]['price']
+           // Render index.handlebars and send dynamic data to the page
     res.render('index', homePageData)
 
+    }) 
+
+ 
 });
 
 // Route to hourly data page
