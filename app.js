@@ -59,21 +59,14 @@ app.get('/', (req, res) => {
 app.get('/hourly',(req, res) => {
 
     // Data will be presented in a table. To loop all rows we need a key for table and for column data
-    let hourlyPageData = { 'tableData': [
-        {'hour': 13,
-        'price': 29.30},
-        {'hour': 14,
-        'price': 29.99},
-        {'hour': 15,
-        'price': 30.50},
-        {'hour': 16,
-        'price': 30.99},
-        {'hour': 17,
-        'price': 31.20}
-    ]};
-
+    cpriceTable.getCurrentPriceTable().then((resultset) => {
+        let tabledata = resultset.rows;
+        let hourlyPageData = {
+            'tableData'; tableData
+        };
+    })
+    console.log(hourlyPageData)
     res.render('hourly', hourlyPageData)
-
 });
 
 // Route to hourly chart page
