@@ -1,12 +1,15 @@
+{{!-- Load a script to create Chart.js charts --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
 {{!-- Load script to create Google Chart --}}
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 
-<h1 style="color: red;">Sähkön tuntihinnat seuraavalle 24 tunnille</h1>
+<h1 style="color: white;">Sähkön tuntihinnat seuraavalle 24 tunnille</h1>
 
 <table>
     <tr>
-        <th><Day></Day>
+        <th>Päivä</th>
         <th>Tunti</th>
         <th>Hinta (snt/kWh)</th>
     </tr>
@@ -28,6 +31,37 @@
     <br>
 </div>
 
+{{!-- Create a named element as a placeholder for the chart.js chart --}}
+<canvas id="hourlyChartChartJS" style="width:100%;max-width:400px"></canvas>
+
+<script>
+    const xValues = ["13", "14", "15", "16", "17"];
+    const yValues = [10, 8, 10, 14, 15];
+    const barColors = ["blue", "green", "blue", "red", "red"];
+
+    new Chart("hourlyChartChartJS", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: false,
+                text: "Sähkön tuntihinnat"
+            }
+        }
+    });
+</script>
+<div>
+    <br>
+    <br>
+</div>
+
 {{!-- Create a named element as a placeholder for the Google chart --}}
 <div id="hourlyChartGoogleChart"></div>
 
@@ -37,11 +71,11 @@
     function drawChart() {
         var data = google.visualization.arrayToDataTable([
             ["Tunti", "Hinta snt/kwh", { role: "style" }],
-            ["13", 29.30, "blue"],
-            ["14", 29.99, "green"],
-            ["15", 30.50, "blue"],
-            ["16", 30.99, "black"],
-            ["17", 31.20, "black"]
+            ["13", 10, "blue"],
+            ["14", 8, "green"],
+            ["15", 10, "blue"],
+            ["16", 14, "red"],
+            ["16", 15, "red"]
         ]);
 
         var view = new google.visualization.DataView(data);
