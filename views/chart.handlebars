@@ -1,0 +1,46 @@
+{{!-- Load a script to create Chart.js charts this is and old version--}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+{{!-- The following paragraph is a placeholder for dynamic data created in a script on this page --}}
+<p id="p1">Tähän tulee kellonaika ja hinta, skriptistä, joka muuttaa sivun sisältöä</p>
+
+{{!-- Create a named element as a placeholder for the chart.js chart --}}
+<canvas id="hourlyChartChartJS" style="width:100%;max-width:400px"></canvas>
+
+{{!-- Script will create arrays from rendered JSON data and build a chart using those arrays --}}
+<script>
+const renderedHourArray = {{hours}};
+const renderedPriceArray = {{prices}};
+let exampleRow = "kello "  + String(renderedHourArray[3]) + " hinta on " + String(renderedPriceArray[3] + " snt/kWh");
+document.getElementById("p1").innerHTML = exampleRow;
+const barColors = ["blue", "green", "blue", "red", "red"];
+
+new Chart("hourlyChartChartJS", {
+    type: "bar",
+    data: {
+        labels: renderedHourArray,
+        datasets: [{
+            backgroundColor: barColors,
+            data: renderedPriceArray
+        }]
+    },
+    options: {
+        legend: { display: false },
+        title: {
+            display: true,
+            text: "Sähkön tuntihinnat"
+        },
+        scales: {
+            y: {
+                Min: 0,
+                suggestedMax: 50
+            }
+        }
+  }
+    
+});
+
+</script>
+
+<p>{{hours}}</p>
+<p>{{prices}}</p>

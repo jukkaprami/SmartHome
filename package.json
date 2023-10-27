@@ -26,7 +26,11 @@
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
     "fs-js": "^1.0.6",
+<<<<<<< HEAD
     "mathjs": "^12.0.0",
+=======
+    "mathjs": "^11.11.2",
+>>>>>>> 4050ebef07dc2b918cfbd9c2696568a02ea236d8
     "node-cron": "^3.0.2",
     "node-fetch": "^2.7.0",
     "node-schedule": "^2.1.1",

@@ -7,7 +7,11 @@
 // The pg-pool library for PostgreSQL Server
 const Pool = require('pg').Pool;
 
+<<<<<<< HEAD
 // DATABASE SETTINGS
+=======
+// APP SETTINGS
+>>>>>>> 4050ebef07dc2b918cfbd9c2696568a02ea236d8
 // ------------
 
 // Create a new pool for Postgres connections
@@ -21,8 +25,18 @@ const pool = new Pool({
 
   // Function for running SQL operations asyncronously
   const getCurrentPrice = async () => {
+<<<<<<< HEAD
     let resultset = await pool.query('SELECT price FROM public.current_prices');
     return resultset;
   }
   
 module.exports = {getCurrentPrice}    
+=======
+    let resultset = await pool.query('SELECT price FROM hourly_price');
+    return resultset;
+  }
+
+  module.exports = {getCurrentPrice}
+
+  
+>>>>>>> 4050ebef07dc2b918cfbd9c2696568a02ea236d8
