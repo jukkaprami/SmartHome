@@ -7,13 +7,11 @@
 // Use Express as web engine
 const express = require('express');
 // Use Express Handlebars as template engine
-const {engine} = require('express-handlebars');
+const { engine } = require('express-handlebars');
 
-// Get external data with node-fetch for version 2.x
-//This version should be installed as follows: npm install node-fetch@2
-
-/* Get external data with node-fetch for version 3.x
-import fetch from 'node-fetch';*/
+// Home made module to get current price
+const cprice = require('./getHomePageData');
+const cpriceTable = require('./getHourlyPageData')
 
 
 // EXPRESS APPLICATION SETTINGS
@@ -40,61 +38,63 @@ app.get('/', (req, res) => {
 
     // Handlebars needs a key to show data on a page, json is a good way to send it
     let homePageData = {
-        'price': 31.25,
-        'wind': 2,
-        'temperature': 18
+        'price': 0,
+        'wind': 0,
+        'temperature': 0
     };
 
-    // Render index.handlebars and send dynamic data to the page
-    res.render('index', homePageData)
+    cprice.getCurrentPrice().then((resultset) => {
+
+        // Set the price value according to the query
+        homePageData.price = resultset.rows[0]['price']
+
+        // Render index.handlebars and send dynamic data to the page
+        res.render('index', homePageData)
+    })
+
+    
 
 });
 
 // Route to hourly data page
-app.get('/hourly',(req, res) => {
+app.get('/hourly', (req, res) => {
 
     // Data will be presented in a table. To loop all rows we need a key for table and for column data
-    let hourlyPageData = { 'tableData': [
-        {'hour': 13,
-        'price': 29.30},
-        {'hour': 14,
-        'price': 29.99},
-        {'hour': 15,
-        'price': 30.50},
-        {'hour': 16,
-        'price': 30.99},
-        {'hour': 17,
-        'price': 31.20}
-    ]};
-
-    res.render('hourly', hourlyPageData)
-
+    cpriceTable.getCurrentPriceTable().then((resultset) => {
+        let tableData = resultset.rows
+        let hourlyPageData = {
+            'tableData': tableData
+        };
+        console.log(hourlyPageData)
+        res.render('hourly', hourlyPageData)
+    })
+    
 });
 
 // Route to hourly chart page
-app.get('/chart',(req, res) => {
+app.get('/chart', (req, res) => {
 
     // Data will be presented in a bar chart. Data will be sent as JSON array to get it work on handlebars page
     let tableHours = [12, 13, 14, 15, 16];
     let jsonTableHours = JSON.stringify(tableHours)
     let tablePrices = [10, 8, 10, 12, 15];
     let jsonTablePrices = JSON.stringify(tablePrices)
-    let chartPageData =  { 'hours': jsonTableHours, 'prices': jsonTablePrices };
+    let chartPageData = { 'hours': jsonTableHours, 'prices': jsonTablePrices };
 
     res.render('chart', chartPageData)
 
 });
 
-app.get('/test',(req, res) => {
+app.get('/graph', (req, res) => {
 
-     // Data will be presented in a bar chart. Data will be sent as JSON array
-     let tableHours = [12, 13, 14, 15, 16];
-     let jsonTableHours = JSON.stringify(tableHours)
-     let tablePrices = [10, 8, 10, 12, 15];
-     let jsonTablePrices = JSON.stringify(tablePrices)
-     let chartPageData =  { 'hours': jsonTableHours, 'prices': jsonTablePrices };
+    // Data will be presented in a bar chart. Data will be sent as JSON array
+    let tableHours = [12, 13, 14, 15, 16];
+    let jsonTableHours = JSON.stringify(tableHours)
+    let tablePrices = [10, 8, 10, 12, 15];
+    let jsonTablePrices = JSON.stringify(tablePrices)
+    let chartPageData = { 'hours': jsonTableHours, 'prices': jsonTablePrices };
 
-    res.render('testCJSv4', chartPageData)
+    res.render('graph', chartPageData)
 
 });
 

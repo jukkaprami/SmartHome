@@ -1,5 +1,5 @@
 // A MINIMAL SERVICE TO FETCH PRICE DATA AND SAVE IT INTO POSTGRESQL DATABASE
-// ===========================================================================
+// ==========================================================================
 
 // LIBRARIES AND MODULES
 // ---------------------
@@ -16,7 +16,7 @@ const getPrices = require('./getNewPrices');
 // Home made library to add messages to a log file
 const logger = require('./logger')
 
-// APP SETTINGS
+// DATABASE SETTINGS
 // ------------
 
 // Create a new pool for Postgres connections
@@ -34,9 +34,10 @@ const pool = new Pool({
 // Use a date variable to keep track of successful data retrievals
 let lastFetchedDate = '1.1.2023'; // Initial value, in production use settings file
 let message = ''
-const logFile = 'dataOperations.Log'
+const logFile = 'dataOperations.log'
+
 // Try to run an operation in 5 minute intervals from 3 to 4 PM
-cron.schedule('*/5 15 * * *', () => {
+cron.schedule('*/5 11 * * *', () => {
   try {
     let timestamp = new Date(); // Get the current timestamp
     let dateStr = timestamp.toLocaleDateString(); // Take date part of the timestamp
@@ -44,6 +45,8 @@ cron.schedule('*/5 15 * * *', () => {
     // If the date of last successful fetch is not the current day, fetch data
     if (lastFetchedDate != dateStr) {
       message = 'Started fetching price data'
+
+      // Log event to  console and log file
       console.log(message);
       logger.add2log(message, logFile)
       getPrices.fetchLatestPriceData().then((json) => {
@@ -53,36 +56,38 @@ cron.schedule('*/5 15 * * *', () => {
           let values = [element.startDate, element.price];
 
           // Build a SQL clauset to insert values into table
-          const sqlClause = 'INSERT INTO public.hourly_price VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING *'; 
+          const sqlClause = 'INSERT INTO public.hourly_price VALUES ($1, $2) ON CONFLICT DO NOTHING RETURNING *';
+
           // Function for running SQL operations asyncronously
           const runQuery = async () => {
             let resultset = await pool.query(sqlClause, values);
             return resultset;
           }
-          // Call query function and echo results to console
+          // Call query function
           runQuery().then((resultset) => {
-            if (resultset.rows[0] != undefined ) {
-              message = 'Added a row'
+
+            // If there is alredy a price for thetimeslot, row is empty ie. undefined
+            if (resultset.rows[0] != undefined) {
+              message = 'Added a row' // The message when not undefined
             }
             else {
-              message = 'Skipped an existing row'
+              message = 'Skipped an existing row' // The message when undefined
             }
+
+            // Log the result of insert operation
             console.log(message);
             logger.add2log(message, logFile)
 
           })
-          
-         
+
         });
       });
       lastFetchedDate = dateStr; // Set fetch date to current date
+
+      // Log when last fetched
       message = 'Fetched at ' + lastFetchedDate;
       console.log(message)
       logger.add2log(message, logFile)
-
-       // log when last fetch
-       console.log(message);
-       logger.add2log(message, logFile)
     } else {
 
       // Log if data has been retrieved earlier at the same day
@@ -91,7 +96,7 @@ cron.schedule('*/5 15 * * *', () => {
       logger.add2log(message, logFile)
     }
 
-  // Log an error if something has been failed to run
+    // Log an error if something has been failed to run
   } catch (error) {
     message = 'An error occurred (' + error.toString() + '), trying again in 5 minutes until 4 PM';
     console.log(message)
