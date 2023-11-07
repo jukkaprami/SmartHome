@@ -27,6 +27,7 @@
     "@fmidev/metoclient": "^6.8.13",
     "@fmidev/metolib": "^2.0.6",
     "browser-env": "^3.3.0",
+    "camaro": "^6.2.1",
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
     "mathjs": "^11.11.2",
