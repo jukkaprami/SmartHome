@@ -32,7 +32,7 @@ const xmlData = `
 </pageData>
 `
 // Template is a set of conversion instructions 
-const template = ['wfs:featurecollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gml:rangeSet/gml:DataBlock/gml:doubleOrNilReasonTupleList'];
+const template = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gml:rangeSet/gml:DataBlock/gml:doubleOrNilReasonTupleList'];
 {
     data : 'gml:doubleOrNilReasonTupleList';
 };
