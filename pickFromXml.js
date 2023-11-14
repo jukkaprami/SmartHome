@@ -424,11 +424,9 @@ const xmlData = `
 `
 // Template is a set of conversion instructions 
 const template = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gml:rangeSet/gml:DataBlock',
-
-
-{
-    data: 'gml:doubleOrNilReasonTupleList'
-}];
+    {
+        data: 'gml:doubleOrNilReasonTupleList'
+    }];
 
 /*(async function () {
     const result = await transform(xmlData, template)
@@ -456,5 +454,9 @@ const xml2objectArray = async (xmlData, template) => {
 xml2objectArray(xmlData, template).then(result => {
     console.log(result)
 })
+
+// TODO: Add a function to convert FMI observation to json
+
+// TODO: Add a function to convert forecast to json
 
 // TODO: Lisää esimerkki prettyPrintin käytöstä

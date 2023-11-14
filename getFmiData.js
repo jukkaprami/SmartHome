@@ -33,3 +33,4 @@ const getForecast = (apicall, place, parameters) => {
     let results = ''
     return results
 }
+
