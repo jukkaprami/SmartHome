@@ -423,7 +423,7 @@ const xmlData = `
 
 `
 // Template is a set of conversion instructions 
-const template = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gml:rangeSet/gml:DataBlock',
+const dataTemplate = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gml:rangeSet/gml:DataBlock',
     {
         data: 'gml:doubleOrNilReasonTupleList'
     }];
@@ -445,14 +445,49 @@ const template = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/o
 * @return {[obj]} JS-objects containing element names and values in correct datatype
 */
 
-const xml2objectArray = async (xmlData, timeTemplate) => {
-    const result = await transform(xmlData, timeTemplate);
+const xml2objectArray = async (xmlData, template) => {
+    const result = await transform(xmlData, template);
     return result
+}
+let weatherDataRows = [];
+let weatherData = '';
+let weatherObject = {
+  temperature: 0,
+  windSpeed: 0,
+  windDirection: 0
 }
 
 // Call the function, get results and then log them to the console
-xml2objectArray(xmlData, timeTemplate).then(result => {
-    console.log(result)
+xml2objectArray(xmlData, dataTemplate).then(result => {
+    // console.log(result)
+    weatherData = result;
+    weatherString = wheatherData[0].data;
+    const cutMark1 = '\n';
+    const cutMark2 = ' ';
+    const weatherDataRows = weatherString.split(cutMark1).trim();
+    weatherDataRows.forEach(element => {
+      trimmedElement = element.trim();
+      const elementValues = trimmedElement.split(cutMark2);
+      elementValues.forEach(element => {
+        weatherObject.temperature = Number(element[2]);
+        weatherObject.windSpeed = Number(element[1]);
+        weatherObject.windDirection = Number(element[0]);
+        weatherDataEntries.push(weatherObject);
+      
+    });
+
+    });
+    /* let cutMark1Position = 0
+    let row = 0
+    let rowString = ''
+    while (cutMark1Position >= 0) {
+      cutmark1Postition = weatherstring.indexof(cutMark1)
+      rowString = weatherString.split()
+    }
+    cutMark1position = weatherString.indexof(cutMark1)
+    console.log('paikka', cutMark1Position)
+    */
+  
 })
 
 timeTemplate = ['wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gml:domainSet/gmlcov:SimpleMultiPoint',
