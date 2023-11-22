@@ -6,7 +6,7 @@ const { transform, prettyPrint } = require('camaro');
 let config = {
   method: 'get',
   maxBodyLength: Infinity,
-  url: 'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=turku&parameters=t2m',
+  url: 'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=turku&parameters=wd_10min',
   headers: { }
 };
 
@@ -22,7 +22,7 @@ const temperatureTemplate = [
 ];
 // Url to use when fethcing temperature data
 
-const temperatureUrl = 'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=turku&parameters=t2m';
+const temperatureUrl = 'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=turku&parameters=wd_10min';
 
 // FUNCTIONS TO GET AND PARSE FMI DATA
 // -----------------------------------
