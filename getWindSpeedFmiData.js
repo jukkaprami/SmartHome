@@ -39,16 +39,16 @@ class WeatherObservationTimeValuePair {
         this.parameterCode = parameterCode;
         this.parameterName = parameterName
 
-        // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
+        // Creates an URL combining predefined query and place and parametercode like ws_10min (Wind Speed)
         this.url =
-            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=' +
+            'http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::multipointcoverage&place=' +
             place +
             '&parameters=' +
             parameterCode;
 
         // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
-            'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
+         'wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gmlcov:rangeType/swe:DataRecord';
 
         // Names for the columns of the resultset
         let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
@@ -155,14 +155,14 @@ class WeatherForecastTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
-            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&place='
+            'http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::multipointcoverage&place='
             + place +
             '&parameters=' +
             parameterCode;
 
         // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
-            'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
+            'wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gmlcov:rangeType/swe:DataRecord';
 
         // Names for the columns of the resultset
         let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
@@ -260,8 +260,8 @@ class WeatherForecastTimeValuePair {
     };
 
 }
-// Test reading observation data and storig results to database: Turku temperatures
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 't2m', 'temperature');
+// Test reading observation data and storig results to database: Turku WindSpeed
+const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'WindSpeed');
 
 // Show url to fetch from
 console.log(observationtimeValuePair.url);
@@ -274,8 +274,8 @@ console.log(observationtimeValuePair.xmlTemplate);
 // Insert observation data into the database
 // observationtimeValuePair.putTimeValuPairsToDb()
 
-// Test reading forecast data and storig results to database: Turku temperatustes
-const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'temperature', 'temperature')
+// Test reading forecast data and storig results to database: Turku WindSpeed
+const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'WindSpeed', 'WindSpeed')
 console.log(forecastTimeValuePair.url);
 console.log(forecastTimeValuePair.xmlTemplate)
 
