@@ -14,6 +14,9 @@ const { transform, prettyPrint } = require('camaro');
 // The pg-pool library for PostgreSQL Server
 const Pool = require('pg').Pool;
 
+// Math for making calculations
+const math = require('mathjs')
+
 // Module to access DB settings
 const AppSettings = require('./handleSettings')
 
@@ -148,6 +151,12 @@ class WeatherObservationTimeValuePair {
 }
 
 class WeatherForecastTimeValuePair {
+/** 
+* A constructon to create weather observation object.
+* @param {str} place - Name of the place for the weather station.
+* @param {str} parameterCode - Name of the FMI weather parameter eg. t2m.
+* @param {str} parameterName - Meaning of the FMI weather parameter eg. temperature.
+*/
     constructor(place, parameterCode, parameterName) {
         this.place = place;
         this.parameterCode = parameterCode;
@@ -260,8 +269,68 @@ class WeatherForecastTimeValuePair {
     };
 
 }
+
+// A class for calcultaing windspeed from wind vectors V and U
+
+class WindVector {
+    /** 
+    * Constructor method.
+    * @summary Creates a Wind vector object using wind components u and v
+    * @param {float} windU - x-component of wind ie. eastward wind
+    * @param {float} windV - y-component of wind ie. southward wind
+    */
+        
+        constructor(windU, windV) {
+            this.windU = windU;
+            this.windV = windV;
+            this.windSpeed = math.sqrt(math.square(this.windV) + math.square(this.windV))
+        }
+        /** 
+        * A method to calculate and return wind angles in different formats.
+        * @return {obj} Returns wind vector angles (rad, deg, map, wind angles) and wind speed.
+        */
+        
+        windParameters() {
+        // Reset all values
+        let windAngle = 0; // Wind blows from opposite direction to vector
+        let geographicAngle = 0; // Angle of vector in a map
+    
+        // atan2 returns angle in radians. Arguments are in (y,x) order!
+        let xyAngleRad = math.atan2(this.windV, this.windU); 
+        let xyAngleDeg = xyAngleRad * 360 /(2 * math.pi); // convert radians to degrees
+        
+        // Convert x-y plane directions to geographic directions
+        // There is 90 degrees shift between x-y and map directions
+        if (xyAngleDeg > 90) {
+        geographicAngle = 360 - (xyAngleDeg -90);
+        }
+    
+        else {
+            geographicAngle = 90 - xyAngleDeg ;
+        }
+        
+        // Wind blow from opposite direction
+        if (geographicAngle < 180) {
+            windAngle = geographicAngle + 180;
+        }
+    
+        else {
+            windAngle = geographicAngle -180
+        }
+        
+        // Return all calculated parameters
+        return {
+                xyAngleRad: xyAngleRad,
+                xyAngleDeg: xyAngleDeg,
+                geographicAngle: geographicAngle,
+                windAngle: math.round(windAngle),
+                windSpeed: math.round(this.windSpeed)
+            };
+        }
+    }
+
 // Test reading observation data and storig results to database: Turku WindSpeed
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'windspeed');
+const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'WindSpeedMS');
 
 // Show url to fetch from
 console.log(observationtimeValuePair.url);
@@ -281,4 +350,7 @@ console.log(forecastTimeValuePair.xmlTemplate)
 
 // Show fetched data as XML output
 // forecastTimeValuePair.getFMIDataAsXML()
-forecastTimeValuePair.putTimeValuPairsToDb()
+// forecastTimeValuePair.putTimeValuPairsToDb()
+
+let windVector = new WindVector(3, -4)
+console.log(windVector.windParameters())

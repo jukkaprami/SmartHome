@@ -260,7 +260,7 @@ class WeatherForecastTimeValuePair {
     };
 
 }
-// Test reading observation data and storig results to database: Turku windspeed
+// Test reading observation data and storig results to database: Turku temperature
 const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 't2m', 'temperature');
 
 // Show url to fetch from
