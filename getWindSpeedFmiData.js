@@ -41,7 +41,7 @@ class WeatherObservationTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like ws_10min (Wind Speed)
         this.url =
-            'http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::multipointcoverage&place=' +
+            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::hourly::multipointcoverage&place=' +
             place +
             '&parameters=' +
             parameterCode;
@@ -155,7 +155,7 @@ class WeatherForecastTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
-            'http://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::multipointcoverage&place='
+            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::hourly::multipointcoverage&place='
             + place +
             '&parameters=' +
             parameterCode;
@@ -261,7 +261,7 @@ class WeatherForecastTimeValuePair {
 
 }
 // Test reading observation data and storig results to database: Turku WindSpeed
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'WindSpeed');
+const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'WindSpeedMS');
 
 // Show url to fetch from
 console.log(observationtimeValuePair.url);
