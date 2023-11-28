@@ -39,19 +39,19 @@ class WeatherObservationTimeValuePair {
         this.parameterCode = parameterCode;
         this.parameterName = parameterName
 
-        // Creates an URL combining predefined query and place and parametercode like ws_10min (Wind Speed)
+        // Creates an URL combining predefined query and place and parametercode like ws_10min (Windspeed)
         this.url =
-            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::hourly::multipointcoverage&place=' +
+            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::timevaluepair&place=' +
             place +
             '&parameters=' +
             parameterCode;
 
         // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
-         'wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gmlcov:rangeType/swe:DataRecord';
+         'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
 
         // Names for the columns of the resultset
-        let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
+        let names = { timeStamp: 'vml:time', value: 'number(vml:value)' };
 
         // Change the name of the value key to the given parameter name
         names[this.parameterName] = names['value']
@@ -155,17 +155,17 @@ class WeatherForecastTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
-            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::hourly::multipointcoverage&place='
+            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::timevaluepair&place='
             + place +
             '&parameters=' +
             parameterCode;
 
         // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
-            'wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage/gmlcov:rangeType/swe:DataRecord';
+            'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
 
         // Names for the columns of the resultset
-        let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
+        let names = { timeStamp: 'vml:time', value: 'number(vml:value)' };
 
         // Change the name of the value key to the given parameter name
         names[this.parameterName] = names['value']
@@ -261,7 +261,7 @@ class WeatherForecastTimeValuePair {
 
 }
 // Test reading observation data and storig results to database: Turku WindSpeed
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'WindSpeedMS');
+const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'windspeed');
 
 // Show url to fetch from
 console.log(observationtimeValuePair.url);
@@ -275,7 +275,7 @@ console.log(observationtimeValuePair.xmlTemplate);
 // observationtimeValuePair.putTimeValuPairsToDb()
 
 // Test reading forecast data and storig results to database: Turku WindSpeed
-const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'WindSpeed', 'WindSpeed')
+const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'windspeed', 'windspeed')
 console.log(forecastTimeValuePair.url);
 console.log(forecastTimeValuePair.xmlTemplate)
 
