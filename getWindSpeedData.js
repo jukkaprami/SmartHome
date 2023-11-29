@@ -35,14 +35,21 @@ const pool = new Pool({
 });
 
 
-// A class for creating various weather objects containing URL and template
+// A class for creating various weather observation objects containing URL and template
 class WeatherObservationTimeValuePair {
+/** 
+* A constructon to create weather observation object.
+* @param {str} place - Name of the place for the weather station.
+* @param {str} parameterCode - Name of the FMI weather parameter eg. ws_10min.
+* @param {str} parameterName - Meaning of the FMI weather parameter eg. WindSpeedMS.
+*/
+    
     constructor(place, parameterCode, parameterName) {
         this.place = place;
         this.parameterCode = parameterCode;
         this.parameterName = parameterName
 
-        // Creates an URL combining predefined query and place and parametercode like ws_10min (Windspeed)
+        // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
             'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::timevaluepair&place=' +
             place +
@@ -51,10 +58,10 @@ class WeatherObservationTimeValuePair {
 
         // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
-         'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
+            'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
 
         // Names for the columns of the resultset
-        let names = { timeStamp: 'vml:time', value: 'number(vml:value)' };
+        let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
 
         // Change the name of the value key to the given parameter name
         names[this.parameterName] = names['value']
@@ -93,7 +100,7 @@ class WeatherObservationTimeValuePair {
         // Define the name of table to insert values it will be parameterName and _observation
 
         // Build correct table name
-        const tableName =  'forecast_'+ this.parameterName
+        const tableName = 'observation_'+ this.parameterName 
 
         // Build a SQL clause to insert data
         const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
@@ -150,19 +157,21 @@ class WeatherObservationTimeValuePair {
 
 }
 
+// A class for creating various weather forecast objects containing URL and template
 class WeatherForecastTimeValuePair {
-/** 
-* A constructon to create weather observation object.
-* @param {str} place - Name of the place for the weather station.
-* @param {str} parameterCode - Name of the FMI weather parameter eg. t2m.
-* @param {str} parameterName - Meaning of the FMI weather parameter eg. temperature.
-*/
+
+    /** 
+    * A constructon to create weather observation object.
+    * @param {str} place - Name of the place for the weather station.
+    * @param {str} parameterCode - Name of the FMI weather parameter eg. ws_10min.
+    * @param {str} parameterName - Meaning of the FMI weather parameter eg. WindSpeedMS.
+    */
     constructor(place, parameterCode, parameterName) {
         this.place = place;
         this.parameterCode = parameterCode;
         this.parameterName = parameterName
 
-        // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
+        // Creates an URL combining predefined query and place and parametercode like temperature
         this.url =
             'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::timevaluepair&place='
             + place +
@@ -174,7 +183,7 @@ class WeatherForecastTimeValuePair {
             'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
 
         // Names for the columns of the resultset
-        let names = { timeStamp: 'vml:time', value: 'number(vml:value)' };
+        let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
 
         // Change the name of the value key to the given parameter name
         names[this.parameterName] = names['value']
@@ -213,7 +222,7 @@ class WeatherForecastTimeValuePair {
         // Define the name of table to insert values it will be parameterName and _observation
 
         // Build correct table name
-        const tableName = 'forecast_'+ this.parameterName
+        const tableName = 'forecast_'+ this.parameterName 
 
         // Build a SQL clause to insert data
         const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
@@ -270,67 +279,67 @@ class WeatherForecastTimeValuePair {
 
 }
 
+
 // A class for calcultaing windspeed from wind vectors V and U
 
 class WindVector {
+/** 
+* Constructor method.
+* @summary Creates a Wind vector object using wind components u and v
+* @param {float} windU - x-component of wind ie. eastward wind
+* @param {float} windV - y-component of wind ie. southward wind
+*/
+    
+    constructor(windU, windV) {
+        this.windU = windU;
+        this.windV = windV;
+        this.windSpeed = math.sqrt(math.square(this.windV) + math.square(this.windV))
+    }
     /** 
-    * Constructor method.
-    * @summary Creates a Wind vector object using wind components u and v
-    * @param {float} windU - x-component of wind ie. eastward wind
-    * @param {float} windV - y-component of wind ie. southward wind
+    * A method to calculate and return wind angles in different formats.
+    * @return {obj} Returns wind vector angles (rad, deg, map, wind angles) and wind speed.
     */
-        
-        constructor(windU, windV) {
-            this.windU = windU;
-            this.windV = windV;
-            this.windSpeed = math.sqrt(math.square(this.windV) + math.square(this.windV))
-        }
-        /** 
-        * A method to calculate and return wind angles in different formats.
-        * @return {obj} Returns wind vector angles (rad, deg, map, wind angles) and wind speed.
-        */
-        
-        windParameters() {
-        // Reset all values
-        let windAngle = 0; // Wind blows from opposite direction to vector
-        let geographicAngle = 0; // Angle of vector in a map
     
-        // atan2 returns angle in radians. Arguments are in (y,x) order!
-        let xyAngleRad = math.atan2(this.windV, this.windU); 
-        let xyAngleDeg = xyAngleRad * 360 /(2 * math.pi); // convert radians to degrees
-        
-        // Convert x-y plane directions to geographic directions
-        // There is 90 degrees shift between x-y and map directions
-        if (xyAngleDeg > 90) {
-        geographicAngle = 360 - (xyAngleDeg -90);
-        }
+    windParameters() {
+    // Reset all values
+    let windAngle = 0; // Wind blows from opposite direction to vector
+    let geographicAngle = 0; // Angle of vector in a map
+
+    // atan2 returns angle in radians. Arguments are in (y,x) order!
+    let xyAngleRad = math.atan2(this.windV, this.windU); 
+    let xyAngleDeg = xyAngleRad * 360 /(2 * math.pi); // convert radians to degrees
     
-        else {
-            geographicAngle = 90 - xyAngleDeg ;
-        }
-        
-        // Wind blow from opposite direction
-        if (geographicAngle < 180) {
-            windAngle = geographicAngle + 180;
-        }
-    
-        else {
-            windAngle = geographicAngle -180
-        }
-        
-        // Return all calculated parameters
-        return {
-                xyAngleRad: xyAngleRad,
-                xyAngleDeg: xyAngleDeg,
-                geographicAngle: geographicAngle,
-                windAngle: math.round(windAngle),
-                windSpeed: math.round(this.windSpeed)
-            };
-        }
+    // Convert x-y plane directions to geographic directions
+    // There is 90 degrees shift between x-y and map directions
+    if (xyAngleDeg > 90) {
+    geographicAngle = 360 - (xyAngleDeg -90);
     }
 
-// Test reading observation data and storig results to database: Turku WindSpeed
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'WindSpeedMS');
+    else {
+        geographicAngle = 90 - xyAngleDeg ;
+    }
+    
+    // Wind blow from opposite direction
+    if (geographicAngle < 180) {
+        windAngle = geographicAngle + 180;
+    }
+
+    else {
+        windAngle = geographicAngle -180
+    }
+    
+    // Return all calculated parameters
+    return {
+            xyAngleRad: xyAngleRad,
+            xyAngleDeg: xyAngleDeg,
+            geographicAngle: geographicAngle,
+            windAngle: math.round(windAngle),
+            windSpeed: math.round(this.windSpeed)
+        };
+    }
+}
+// Test reading observation data and storig results to database: Turku windspeed
+const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku','WindSpeedMS');
 
 // Show url to fetch from
 console.log(observationtimeValuePair.url);
@@ -343,14 +352,14 @@ console.log(observationtimeValuePair.xmlTemplate);
 // Insert observation data into the database
 // observationtimeValuePair.putTimeValuPairsToDb()
 
-// Test reading forecast data and storig results to database: Turku WindSpeed
+// Test reading forecast data and storig results to database: Turku windspeed
 const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'windspeed', 'windspeed')
 console.log(forecastTimeValuePair.url);
 console.log(forecastTimeValuePair.xmlTemplate)
 
 // Show fetched data as XML output
 // forecastTimeValuePair.getFMIDataAsXML()
-// forecastTimeValuePair.putTimeValuPairsToDb()
+//forecastTimeValuePair.putTimeValuPairsToDb()
 
 let windVector = new WindVector(3, -4)
 console.log(windVector.windParameters())
