@@ -41,7 +41,7 @@ class WeatherObservationTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
-            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&place=' +
+            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place=' +
             place +
             '&parameters=' +
             parameterCode;
@@ -155,7 +155,7 @@ class WeatherForecastTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
-            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=fmi::observations::weather::timevaluepair&place='
+            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place='
             + place +
             '&parameters=' +
             parameterCode;
@@ -260,6 +260,8 @@ class WeatherForecastTimeValuePair {
     };
 
 }
+
+
 // Test reading observation data and storig results to database: Turku temperature
 const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 't2m', 'temperature');
 
