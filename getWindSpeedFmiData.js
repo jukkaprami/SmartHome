@@ -44,7 +44,7 @@ class WeatherObservationTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like ws_10min (Windspeed)
         this.url =
-            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::timevaluepair&place=' +
+            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place=' +
             place +
             '&parameters=' +
             parameterCode;
@@ -164,7 +164,7 @@ class WeatherForecastTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
-            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::forecast::edited::weather::scandinavia::point::timevaluepair&place='
+            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place='
             + place +
             '&parameters=' +
             parameterCode;
@@ -330,7 +330,7 @@ class WindVector {
     }
 
 // Test reading observation data and storig results to database: Turku WindSpeed
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'ws_10min', 'WindSpeedMS');
+const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 'WindVMS');
 
 // Show url to fetch from
 console.log(observationtimeValuePair.url);
@@ -344,7 +344,7 @@ console.log(observationtimeValuePair.xmlTemplate);
 // observationtimeValuePair.putTimeValuPairsToDb()
 
 // Test reading forecast data and storig results to database: Turku WindSpeed
-const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'windspeed', 'windspeed')
+const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'windv')
 console.log(forecastTimeValuePair.url);
 console.log(forecastTimeValuePair.xmlTemplate)
 
@@ -352,5 +352,5 @@ console.log(forecastTimeValuePair.xmlTemplate)
 // forecastTimeValuePair.getFMIDataAsXML()
 // forecastTimeValuePair.putTimeValuPairsToDb()
 
-let windVector = new WindVector(3, -4)
+let windVector = new WindVector(0.4, 0.7)
 console.log(windVector.windParameters())
