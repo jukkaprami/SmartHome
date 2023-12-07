@@ -35,10 +35,28 @@ const pool = new Pool({
     port: settings.port
 });
 
-// Run a function every 30 minutes 
+// Use a date variable to keep track of successful data retrievals
+let lastFetchedDate = '1.1.2023'; // Initial value, in production use settings file
+let message = ''
+const logFile = 'dataOperations.log'
+
+// Run a function every day in 30 minute intervals
 cron.schedule('*/30 * * * *', () => {
     console.log('This will be executed daily at every 30 minutes')
-});
+
+    // If the date of last successful fetch is not the current day, fetch data
+    if (lastFetchedDate != dateStr) {
+        message = 'Started fetching price data'
+                                
+          // Loop through temperature data and pick startDate and temperature elements
+          json.temperatures.forEach(async (element) => {
+            let values = [element.startDate, element.temperature];
+          
+    }
+    
+    )
+
+}})
 
 // A class for creating various weather objects containing URL and template
 class WeatherObservationTimeValuePair {
@@ -49,15 +67,15 @@ class WeatherObservationTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
-            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place=' +
+            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::hourly::multipointcoverage&place=' +
             place +
             '&parameters=' +
             parameterCode;
 
         // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
-            'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
-
+            'wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage';
+        
         // Names for the columns of the resultset
         let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
 
@@ -99,7 +117,6 @@ class WeatherObservationTimeValuePair {
 
         // Build correct table name
         const tableName =  'observation_'+ this.parameterName
-
         // Build a SQL clause to insert data
         const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
 
@@ -163,14 +180,14 @@ class WeatherForecastTimeValuePair {
 
         // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
-            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place='
+            'https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=fmi::observations::weather::hourly::multipointcoverage&place='
             + place +
             '&parameters=' +
             parameterCode;
 
         // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
-            'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
+            'wfs:FeatureCollection/wfs:member/omso:GridSeriesObservation/om:result/gmlcov:MultiPointCoverage';
 
         // Names for the columns of the resultset
         let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
@@ -212,7 +229,7 @@ class WeatherForecastTimeValuePair {
         // Define the name of table to insert values it will be parameterName and _observation
 
         // Build correct table name
-        const tableName = 'forecast_'+ this.parameterName
+        const tableName =  'temperature_'+ this.parameterName
 
         // Build a SQL clause to insert data
         const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
@@ -271,7 +288,7 @@ class WeatherForecastTimeValuePair {
     
 
 // Test reading observation data and storig results to database: Turku temperature
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 't2m', 'temperature');
+const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 't2m');
 
 // Show url to fetch from
 console.log(observationtimeValuePair.url);
@@ -284,8 +301,8 @@ console.log(observationtimeValuePair.xmlTemplate);
 // Insert observation data into the database
 // observationtimeValuePair.putTimeValuPairsToDb()
 
-// Test reading forecast data and storig results to database: Turku temperatustes
-const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'temperature', 'temperature')
+// Test reading forecast data and storing results to database: Turku temperatustes
+const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'temperature', 'observation');
 console.log(forecastTimeValuePair.url);
 console.log(forecastTimeValuePair.xmlTemplate)
     
