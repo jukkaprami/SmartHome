@@ -35,49 +35,10 @@ const pool = new Pool({
     port: settings.port
 });
 
-// GET, PROCESS AND SAVE DATA
-// --------------------------
-
-// Use a date variable to keep track of successful data retrievals
-let lastFetchedDate = '1.1.2023'; // Initial value, in production use settings file
-let message = ''
-const logFile = 'dataOperations.log'
-
-// Schedule to task to run every 60 minutes of day
-cron.schedule('/60 * * * *'), () => {
-    try {
-        let timestamp = new Date(); // Get the current timestamp
-        let dateStr = timestamp.toLocaleDateString(); // Take date part of the timestamp
-    
-
-    // If the date of last successful fetch is not the current day, fetch data
-    if (lastFetchedDate != dateStr) {
-        message = 'Started fetching Temperature data'
-  
-        // Log event to  console and log file
-        console.log(message);
-        logger.add2log(message, logFile)
-        getPrices.fetchLatestTemperatureData().then((json) => {
-        
-        
-            // Loop through prices data and pick startDate and price elements
-        json.temperature.forEach(async (element) => {
-            let values = [element.startDate, element.temperature];
-
-        
-        }
-        
-        )
-
-
-        })
-
-        
-    .catch((error) => {
-        // If rejected log error
-        console.log(error);
-    });
-
+// Run a function every day at 15:30 
+cron.schedule('*/60 * * * *', () => {
+    console.log('This will be executed daily at every 60 minutes')
+});
 
 // A class for creating various weather objects containing URL and template
 class WeatherObservationTimeValuePair {
