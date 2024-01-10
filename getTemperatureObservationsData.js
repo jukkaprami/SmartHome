@@ -116,7 +116,7 @@ class WeatherObservationTimeValuePair {
         // Define the name of table to insert values it will be parameterName and _observation
 
         // Build correct table name
-        const tableName =  'observation_'+ this.parameterName
+        const tableName =  + this.parameterName+ '_temperature'+
         // Build a SQL clause to insert data
         const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
 
@@ -229,7 +229,7 @@ class WeatherForecastTimeValuePair {
         // Define the name of table to insert values it will be parameterName and _observation
 
         // Build correct table name
-        const tableName =  'temperature_'+ this.parameterName
+        const tableName =  'observations_'+ this.parameterName
 
         // Build a SQL clause to insert data
         const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
