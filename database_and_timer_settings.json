@@ -1,0 +1,13 @@
+{
+    "database": {
+        "user": "postgres",
+        "password": "Q2werty",
+        "host": "localhost",
+        "database": "smarthome",
+        "port": "5432"
+    },
+    
+    "timer": "*/1 * * * *",
+
+    "weather_timer": "*/1 * * * *"
+}

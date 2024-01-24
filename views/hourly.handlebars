@@ -1,11 +1,4 @@
-{{!-- Load a script to create Chart.js charts --}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-
-{{!-- Load script to create Google Chart --}}
-<script src="https://www.gstatic.com/charts/loader.js"></script>
-
-
-<h1 style="color: white;">Sähkön tuntihinnat seuraavalle 24 tunnille</h1>
+<h1>Sähkön tuntihinnat seuraavalle 24 tunnille</h1>
 
 <table>
     <tr>
@@ -13,88 +6,82 @@
         <th>Tunti</th>
         <th>Hinta (snt/kWh)</th>
     </tr>
-    <!-- Loop every item in tabledata list, tableData is the key for the list-->
     {{#each tableData}}
-
-    <!-- Create a row and put values into columns according to keys hour and price-->
-    <tr>
-        <td>{{day}}</td>
+    <tr><td>{{day}}</td>
         <td>{{hour}}</td>
         <td>{{price}}</td>
     </tr>
-    {{!-- Loop must end with {{/each tag}}, btw this is a handlebars comment --}}
     {{/each}}
 </table>
-<p>{{chartData}}</p>
+
+<!-- Chart.js -->
+
 <div>
-    <br>
-    <br>
+    <canvas id="sähköhinta" style="width:80%;max-width:700px"></canvas> 
 </div>
 
-{{!-- Create a named element as a placeholder for the chart.js chart --}}
-<canvas id="hourlyChartChartJS" style="width:100%;max-width:400px"></canvas>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script> 
+<script>   
+    const xValues = {{chartHours}};
+    const yValues = {{chartPrices}};
+    // const xValues = [13, 14, 15, 16];
+    // const yValues = [31.44, 32.1, 30.5, 29.99];
+    const barColors = "orange";
 
-<script>
-    const xValues = ["13", "14", "15", "16", "17"];
-    const yValues = [10, 8, 10, 14, 15];
-    const barColors = ["blue", "green", "blue", "red", "red"];
-
-    new Chart("hourlyChartChartJS", {
+    new Chart("sähköhinta", {
         type: "bar",
         data: {
             labels: xValues,
             datasets: [{
+                label: 'euro',
                 backgroundColor: barColors,
                 data: yValues
             }]
         },
         options: {
-            legend: { display: false },
             title: {
-                display: false,
-                text: "Sähkön tuntihinnat"
+                display: true,
+                text: "Päivittäinen Sähköhinta"
+           
+            },
+            legend: {
+                display: true,
+                labels: {
+                    color: "orange",
+                    text: "euro"
+                }
             }
+
         }
-    });
+        
+    })
 </script>
-<div>
-    <br>
-    <br>
-</div>
-
-{{!-- Create a named element as a placeholder for the Google chart --}}
-<div id="hourlyChartGoogleChart"></div>
-
-<script type="text/javascript">
-    google.charts.load("current", { packages: ['corechart'] });
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ["Tunti", "Hinta snt/kwh", { role: "style" }],
-            ["13", 10, "blue"],
-            ["14", 8, "green"],
-            ["15", 10, "blue"],
-            ["16", 14, "red"],
-            ["16", 15, "red"]
-        ]);
-
-        var view = new google.visualization.DataView(data);
-
-        var options = {
-            title: "Seuraavien 24 h tuntihinnat",
-            width: 600,
-            height: 400,
-            bar: { groupWidth: "95%" },
-            legend: { position: "none" },
-            vAxes: {
-                // Adds titles to each axis.
-                0: { title: 'hinta snt/kWh' }
-
-            }
-        };
 
 
-        var chart = new google.visualization.ColumnChart(document.getElementById("hourlyChartGoogleChart"));
-        chart.draw(view, options);
-    }
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<div id="plVersio" style="width:80%;max-width:700px"></div>
+
+<!-- Plotly.js -->
+
+<script>
+    const xArray = {{chartHours}};
+    const yArray = {{chartPrices}};
+    const data = [
+        {
+            x: xArray,
+            y: yArray,
+            type: 'bar',
+            orientation: "v",
+            marker: { color: "rgba(0,0,255,0.6)" },
+            text: 'euro',
+            name: 'hinta'
+            
+    }];
+
+    const layout = { title: "Sähköhinta"};
+
+    Plotly.newPlot('plVersio', data, layout);
 </script>

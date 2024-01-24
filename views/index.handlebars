@@ -1,45 +1,36 @@
 
-{{!-- Data rendered from app.js routes section --}}
-<p>Tämä on testiaikainen kotisivu, jossa sähkön nykyinen tuntihinta tulee tietokannan näkymästä.</p>
+<p>Tämä on testiaikainen kotisivu</p>
 <h1>Sähkö on nyt kallista</h1>
 <h1 class="expensive">{{price}} snt/kWh</h1>
-<h2>Tuuli {{wind}} m/s</h2>
+<h2>Tuulinopeus {{wind_speed}} m/s</h2>
+<h2>Tuulen suunta {{wind_direction}}</h2>
 <h2>Lämpötila {{temperature}}</h2>
-<h2>
-    <br>
-    <br>
 
-{{!-- Show the current date and a digital clock --}}
-{{!-- Data will be rendered by client ie. browser:  put no overhead to server--}}
-</h2>
+<br>
+<br>
+<br>
+
 <h3>Tänään on</h3>
 <h3 id="dayName"></h3>
 <h3 id="dateString"></h3>
 
-{{!-- There must be an event to trigger functions or scripts in the browser, run the script when page loads --}}
-<h2 onload=showTime() id="clock" class="digitalClock"></h2>
+<h2 ondload=showTime() id="clock"></h2>
+
 <script>
-    // ES6 style function to create time string and update it every second
     const showTime = () => {
-
-        // Create a date object containing curent timestamp
         const date = new Date();
-
-        // Separate hours, minutes and seconds
-        let h = date.getHours(); 
-        let m = date.getMinutes(); 
+        let h = date.getHours();
+        let m = date.getMinutes();
         let s = date.getSeconds();
         let weekdayNumber = date.getDay();
         let day = date.getDate();
         let month = date.getMonth() + 1;
         let year = date.getFullYear();
 
-        // Add leading zeros in simplified if
         h = (h < 10) ? "0" + h : h;
         m = (m < 10) ? "0" + m : m;
         s = (s < 10) ? "0" + s : s;
 
-        // Dictionary for Finnish day names
         const dayNameLookup = {
             1: 'maanantai',
             2: 'tiistai',
@@ -50,23 +41,16 @@
             7: 'sunnuntai'
         };
 
-        // Lookup day name by number 1 monday, 7 sunday
         let dayName = dayNameLookup[weekdayNumber];
 
-        // Build a string for time and put it into h2 tag named clock
         let time = h + "." + m + "." + s;
         document.getElementById("clock").innerHTML = time;
 
-        // Put weekday name into element named dayName
         document.getElementById("dayName").innerHTML = dayName;
 
-        // Put the date string into a element named dateString
-        document.getElementById("dateString").innerHTML =  day + "." + month + "." + year;
+        document.getElementById("dateString").innerHTML = day + "." + month + "." + year;
 
-        // After 1000 ms (1 s) call showTime() again
         setTimeout(showTime, 1000);
-
     }
-
     showTime();
 </script>

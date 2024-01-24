@@ -1,12 +1,4 @@
-// A TOOL FOR ADDING MESSAGES TO A LOG FILE
-// ========================================
-
-// LIBRARIES
-// ----------
 const fs = require('fs');
-
-// FUNCTION DEFINITONS
-// -------------------
 
 const add2log = (entry, fileName) => {
     const isoTimeStamp = new Date().toISOString();
@@ -16,11 +8,12 @@ const add2log = (entry, fileName) => {
             console.log(err);
         }
     })
-};
+}
 
-// EXPORT
-// ------
+add2log('This is an informational message', 'dataOperation.log')
 
 module.exports = {
     add2log
 }
+
+

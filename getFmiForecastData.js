@@ -5,8 +5,10 @@ const Pool = require('pg').Pool;
 const math = require('mathjs')
 
 const settings = require('./database_and_timer_settings.json')
+const logger = require('./logger')
 
 const database = settings.database;
+const logFile = 'dataOperationsLog';
 
 const pool = new Pool(
     database
@@ -83,11 +85,13 @@ class WeatherForecastTimeValue {
                                     message = 'Skipped an existing row';
                                 }
                                 console.log(message);
+                                logger.add2log(message, logFile)
                             })
                         })
                     })
                     .catch((error) => {
                         console.log(error);
+                        logger.add2log(error, logFile)
                     })
             })    
     }
@@ -105,9 +109,9 @@ const addWindY = new WeatherForecastTimeValue('Turku', 'WindVMS', 'wind_vector_y
 // Tuulivektorin x-komponentti = 'WindUMS'
 // Tuulivektorin y-komponentti = 'WindVMS'
 
-/*addTemperature.putTimeValuePairsToDb()
+addTemperature.putTimeValuePairsToDb()
 addWindX.putTimeValuePairsToDb()
-addWindY.putTimeValuePairsToDb()*/
+addWindY.putTimeValuePairsToDb()
 
 // A class for calculating windspeed from wind vectors V and U
 class WindVector {
@@ -152,4 +156,9 @@ class WindVector {
 }
 
 test = new WindVector(-3.6, 0.8)
-console.log(test.windParameters())
+//console.log(test.windParameters())
+
+module.exports = {
+    WeatherForecastTimeValue,
+    WindVector
+}

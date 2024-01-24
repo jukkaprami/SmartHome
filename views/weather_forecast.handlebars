@@ -1,0 +1,22 @@
+{{!-- A PAGE FOR WEATHER FORECASTS AND OBSERVATIONS --}}
+
+<h1>Sääennusteet</h1>
+
+<table>
+    <tr>
+        <th>Paikka</th>
+        <th>Päiväys ja aika</th>
+        <th>Lämpötila</th>
+        <th>Tuulivektori X</th>
+        <th>Tuulivektori Y</th>
+    </tr>
+    {{#each tableData}}
+    <tr>
+        <td>{{place}}</td>
+        <td>{{timestamp}}</td>
+        <td>{{temperature}}</td>
+        <td>{{wind_vector_x}}</td>
+        <td>{{wind_vector_y}}</td>
+    </tr>
+    {{/each}}
+</table>
