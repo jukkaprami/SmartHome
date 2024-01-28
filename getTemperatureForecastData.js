@@ -1,185 +1,39 @@
-// A MODULE FOR FETCHING FMI OBSERVATIONS AND FORECASTS
-// AND SAVING RETRIEVED DATA TO A DATABASE
-// ====================================================
-
-// LIBRARIES AND MODULES
-// ---------------------
-
-// Axios for using http or https requests to get data
 const axios = require('axios');
 
-// Camaro to parse and beautify XML data
 const { transform, prettyPrint } = require('camaro');
-
-// Scheduler to fetch temperature forecast data from FMI
-const cron = require('node-cron');
-
-// The pg-pool library for PostgreSQL Server
 const Pool = require('pg').Pool;
+const math = require('mathjs')
 
-// Module to access DB settings
-const AppSettings = require('./handleSettings')
+const settings = require('./database_and_timer_settings.json')
+const logger = require('./logger')
 
+const database = settings.database;
+const logFile = 'dataOperationsLog';
 
-// DATABASE SETTINGS
-// -----------------
-const appSettings = new AppSettings('settings.json')
-const settings = appSettings.readSettings()
+const pool = new Pool(
+    database
+);
 
-// Create a new pool for Postgres connections using settings file parameters
-const pool = new Pool({
-    user: settings.user,
-    password: settings.password,
-    host: settings.server,
-    database: settings.db,
-    port: settings.port
-});
-
-// Run a function every 30 minutes 
-cron.schedule('*/30 * * * *', () => {
-    console.log('This will be executed daily at every 30 minutes')
-});
-
-// A class for creating various weather objects containing URL and template
-class WeatherObservationTimeValuePair {
+class WeatherForecastTimeValue {
     constructor(place, parameterCode, parameterName) {
         this.place = place;
         this.parameterCode = parameterCode;
         this.parameterName = parameterName
 
-        // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
-        this.url =
-            'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place=' +
-            place +
-            '&parameters=' +
-            parameterCode;
-
-        // Constant XML path to the begining of time-value-pairs
-        this.WFSPath =
-            'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
-
-        // Names for the columns of the resultset
-        let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
-
-        // Change the name of the value key to the given parameter name
-        names[this.parameterName] = names['value']
-        delete names['value'] // Must be removed
-
-        // Create a template for Camaro transformations
-        this.xmlTemplate = [
-            this.WFSPath,
-            names,
-        ];
-
-        this.axiosConfig = {
-            method: 'get',
-            maxBodyLength: 'infinity',
-            url: this.url,
-            headers: {},
-        };
-    }
-
-    // A method to test that weather data is available in a correct form
-    getFMIDataAsXML() {
-        axios.request(this.axiosConfig).then((response) => {
-            console.log(response.data)
-        })
-    }
-
-    // A method to to convert XML data to an array of objects
-    async convertXml2array(xmlData, template) {
-        const result = await transform(xmlData, template);
-        return result;
-    };
-
-    // A method to fethc and convert weather data and save it into a databse
-    putTimeValuPairsToDb() {
-
-        // Define the name of table to insert values it will be parameterName and _observation
-
-        // Build correct table name
-        const tableName =  'observation_'+ this.parameterName
-
-        // Build a SQL clause to insert data
-        const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
-
-        // Use Axios to fethc data from FMI
-        axios
-            .request(this.axiosConfig) // Make the request
-            .then((response) => {
-
-                // If promise has been fulfilled convert data to an array
-                // XML is in the data portion (ie. body) of the response -> response.data
-                transform(response.data, this.xmlTemplate)
-                    .then((result) => {
-
-                        // Loop elements of the array
-                        result.forEach((element) => {
-
-                            // Create a vector for values 
-                            let values = [element.timeStamp, element[this.parameterName], this.place]
-
-                            // Define a function to run SQL clause
-                            const runQuery = async () => {
-                                let resultset = await pool.query(sqlClause, values);
-                                return resultset;
-                            }
-
-                            // Call query function and log status of operation
-                            runQuery().then((resultset) => {
-
-                                // Define a messaget to be logged to console or log file
-                                let message = ''
-
-                                // If there is alredy an observation for this time and place -> row is empty ie. undefined
-                                if (resultset.rows[0] != undefined) {
-                                    message = 'Added a row' // The message when not undefined
-                                }
-                                else {
-                                    message = 'Skipped an existing row' // The message when undefined
-                                }
-
-                                // Log the result of insert operation
-                                console.log(message);
-
-                            })
-
-                        })
-                    })
-                    .catch((error) => {
-                        // if rejected handle the error
-                        console.log(error);
-                    });
-            });
-    };
-
-}
-
-class WeatherForecastTimeValuePair {
-    constructor(place, parameterCode, parameterName) {
-        this.place = place;
-        this.parameterCode = parameterCode;
-        this.parameterName = parameterName
-
-        // Creates an URL combining predefined query and place and parametercode like t2m (temperature)
         this.url =
             'https://opendata.fmi.fi/wfs/fin?service=WFS&version=2.0.0&request=GetFeature&storedquery_id=ecmwf::forecast::surface::point::timevaluepair&place='
-            + place +
+            + this.place +
             '&parameters=' +
-            parameterCode;
+            this.parameterCode;
 
-        // Constant XML path to the begining of time-value-pairs
         this.WFSPath =
             'wfs:FeatureCollection/wfs:member/omso:PointTimeSeriesObservation/om:result/wml2:MeasurementTimeseries/wml2:point/wml2:MeasurementTVP';
 
-        // Names for the columns of the resultset
         let names = { timeStamp: 'wml2:time', value: 'number(wml2:value)' };
 
-        // Change the name of the value key to the given parameter name
         names[this.parameterName] = names['value']
-        delete names['value'] // Must be removed
+        delete names['value'] 
 
-        // Create a template for Camaro transformations
         this.xmlTemplate = [
             this.WFSPath,
             names,
@@ -193,102 +47,118 @@ class WeatherForecastTimeValuePair {
         };
     }
 
-    // A method to test that weather data is available in a correct form
     getFMIDataAsXML() {
         axios.request(this.axiosConfig).then((response) => {
             console.log(response.data)
         })
     }
 
-    // A method to to convert XML data to an array of objects
-    async convertXml2array(xmlData, template) {
-        const result = await transform(xmlData, template);
-        return result;
-    };
+    readAndConvertToArray() {
+        axios.request(this.axiosConfig).then((response) => {
+            transform(response.data, this.xmlTemplate).then((result) => {
+                console.log(result)
+                return result
+            })
+        })
+    }
 
-    // A method to fethc and convert weather data and save it into a databse
-    putTimeValuPairsToDb() {
-
-        // Define the name of table to insert values it will be parameterName and _observation
-
-        // Build correct table name
-        const tableName = 'forecast_'+ this.parameterName
-
-        // Build a SQL clause to insert data
+    putTimeValuePairsToDb() {
+        let tableName = this.parameterName + '_forecast';    
         const sqlClause = 'INSERT INTO public.' + tableName + ' VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *';
-
-        // Use Axios to fethc data from FMI
         axios
-            .request(this.axiosConfig) // Make the request
+            .request(this.axiosConfig)
             .then((response) => {
-
-                // If promise has been fulfilled convert data to an array
-                // XML is in the data portion (ie. body) of the response -> response.data
                 transform(response.data, this.xmlTemplate)
                     .then((result) => {
-
-                        // Loop elements of the array
                         result.forEach((element) => {
-
-                            // Create a vector for values 
                             let values = [element.timeStamp, element[this.parameterName], this.place]
-
-                            // Define a function to run SQL clause
                             const runQuery = async () => {
                                 let resultset = await pool.query(sqlClause, values);
                                 return resultset;
                             }
-
-                            // Call query function and log status of operation
                             runQuery().then((resultset) => {
-
-                                // Define a messaget to be logged to console or log file
-                                let message = ''
-
-                                // If there is alredy an observation for this time and place -> row is empty ie. undefined
+                                let message = '';
                                 if (resultset.rows[0] != undefined) {
-                                    message = 'Added a row' // The message when not undefined
+                                    message = 'Added a row';
                                 }
                                 else {
-                                    message = 'Skipped an existing row' // The message when undefined
+                                    message = 'Skipped an existing row';
                                 }
-
-                                // Log the result of insert operation
                                 console.log(message);
-
+                                logger.add2log(message, logFile)
                             })
-
                         })
                     })
                     .catch((error) => {
-                        // if rejected handle the error
                         console.log(error);
-                    });
-            });
-    };
-
+                        logger.add2log(error, logFile)
+                    })
+            })    
+    }
 }
+
+const addTemperature = new WeatherForecastTimeValue('Turku', 'Temperature', 'temperature')
+const addWindX = new WeatherForecastTimeValue('Turku', 'WindUMS', 'wind_vector_x')
+const addWindY = new WeatherForecastTimeValue('Turku', 'WindVMS', 'wind_vector_y')
+
+// addTemperature.getFMIDataAsXML()
+// addWindX.readAndConvertToArray()
+// addWindY.readAndConvertToArray()
+
+// temperature = parameter Code 'Temperature'
+// Tuulivektorin x-komponentti = 'WindUMS'
+// Tuulivektorin y-komponentti = 'WindVMS'
+
+// addTemperature.putTimeValuePairsToDb()
+// addWindX.putTimeValuePairsToDb()
+// SaddWindY.putTimeValuePairsToDb()
+
+// A class for calculating windspeed from wind vectors V and U
+class WindVector {
+    constructor(wind_x_vector, wind_y_vector) {
+        this.wind_x_vector = wind_x_vector;
+        this.wind_y_vector = wind_y_vector;
+        this.windSpeed = math.sqrt(math.square(this.wind_x_vector) + math.square(this.wind_y_vector))
+    }
+    windParameters() {
+    let windAngle = 0; // Wind blows from opposite direction to vector
+    let geographicAngle = 0; // Angle of vector in a map
     
+    // atan2 returns angle in radians. Arguments are in (y, x) order!
+    let xyAngleRad = math.atan2(this.wind_y_vector, this.wind_x_vector);
+    let xyAngleDeg = xyAngleRad * 360 /(2 * math.pi); // convert radians to degrees
 
-// Test reading observation data and storig results to database: Turku temperature
-const observationtimeValuePair = new WeatherObservationTimeValuePair('Turku', 't2m', 'temperature');
+    // Convert x-y plane directions to geographic directions. There is a 90 degree shift between x-y and map directions.
+    if (xyAngleDeg > 90) {
+        geographicAngle = 360 - (xyAngleDeg -90);
+    }
+    else {
+        windAngle = 90 - xyAngleDeg;
+    }
 
-// Show url to fetch from
-console.log(observationtimeValuePair.url);
+    // Wind blow from opposite direction
+    if (geographicAngle < 180) {
+        windAngle = geographicAngle + 180;
+    }
+    else {
+        windAngle = geographicAngle - 180;
+    }
 
-// Show parsing template to see resultset column names
-console.log(observationtimeValuePair.xmlTemplate);
-// Show fetched data as XML output
-// observationTimeValuePair.getFMIDataAsXML();
+    // Return all calculated parameters
+    return {
+        xyAngleRad: xyAngleRad, // x-y koordinatiston kulma radianeina (matematiikassa 0 .. 2pi, funktiossa 0 .. pi .. -pi) -> kulman sisäisen kaaren pituus
+        xyAngleDeg: xyAngleDeg, // x-y koordinatiston kulma asteena -> kulman sisäisen kaaren pituus
+        geographicAngle: geographicAngle, // maantieteellinen suunt mihin tuulivektoori osoittaa asteena
+        windAngle: math.round(windAngle), // maantieteellinen suunta mistä tuuli tulee asteena
+        windSpeed: math.round(this.windSpeed) // Tuulen nopeus
+    }
+    }
+}
 
-// Insert observation data into the database
-// observationtimeValuePair.putTimeValuPairsToDb()
+test = new WindVector(-0.5, 1)
+console.log(test.windSpeed)
 
-// Test reading forecast data and storig results to database: Turku temperatustes
-const forecastTimeValuePair = new WeatherForecastTimeValuePair('Turku', 'temperature', 'temperature')
-console.log(forecastTimeValuePair.url);
-console.log(forecastTimeValuePair.xmlTemplate)
-    
-// Show fetched data as XML output
-// forecastTimeValuePair.getFMIDataAsXML()
-forecastTimeValuePair.putTimeValuPairsToDb()
+module.exports = {
+    WeatherForecastTimeValue,
+    WindVector
+}
