@@ -49,7 +49,7 @@ const getCurrentWind_speed = async () => {
 }
 
 const getWeatherForecast = async () => {
-    let resultset = await pool.query('SELECT * FROM public.forecast_temp_and_wind_vector ORDER BY timestamp DESC LIMIT 10')
+    let resultset = await pool.query('SELECT * FROM public.forecast_temp_wind_vector_and_wind_speed ORDER BY timestamp DESC LIMIT 10')
     return resultset;
 }
 

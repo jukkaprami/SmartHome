@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>viikkoenuste</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="assets/css/Navbar-Centered-Brand-icons.css">
+</head>
+
+<body style="background: #22577a;">
+    <nav class="navbar navbar-light navbar-expand-md" style="background: #77bfa3;">
+        <div class="container-fluid"><img src="assets/img/SähkövahtiLogo.svg" width="267" height="41"><i class="icon ion-navicon-round" style="font-size: 29px;"></i>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link active" href="#">First Item</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Second Item</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Third Item</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="d-flex flex-column" style="background: #22577a;">
+        <div>
+            <div class="container d-flex align-items-center align-self-start" style="background: #77bfa3;margin: 15px;width: 312px;margin-left: 15px;border-radius: 5px;height: 61px;border-width: 1px;border-style: solid;"><img src="assets/img/ViikkoennusteButtonSmall.svg" width="45" height="59" style="height: 49px;">
+                <p style="font-size: 24px;text-align: center;margin-top: 0px;padding-top: 10px;border-radius: 5px;margin-left: 20px;">Viikkoennuste</p>
+            </div>
+
+
+
+        <div class="container d-flex flex-column" style="padding: 15px;padding-right: 15px;padding-left: 15px;background: #77bfa3;border-radius: 5px;border-width: 1px;border-style: solid;width: 325px;height: 200px;">
+                <p style="text-decoration:  underline;">Seuraavan 5 vrk:n keskihinta ennuste:</p>
+                
+
+<div>
+    <canvas id="PalkkiTaulu" style="width:80%;max-width:700px;height80%;max_height:350px"></canvas> 
+</div>
+
+
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script> 
+
+<script>   
+    Chart.defaults.global.defaultFontColor = "#000";
+    const xValues = {{hours}};
+    const yValues = {{prices}};
+    // const xValues = [13, 14, 15, 16];
+    // const yValues = [31.44, 32.1, 30.5, 29.99];
+    const ylaRaja = 5;
+    const barColors = [];
+    const bordColors = [];
+
+//Palkkien väritys Y arvon eli hintojen mukaan
+    for(i = 0; i < yValues.length; i++){
+        if(yValues[i] <= 0) {barColors.push("rgba(10, 185, 0, 0.7)"),bordColors.push("rgba(0, 167, 12, 1)")}
+        if(yValues[i] > 0 && yValues[i] <=ylaRaja) {barColors.push("rgb(34, 88, 122, 0.7)"),bordColors.push("rgb(24, 61, 85, 1)")}
+        if(yValues[i] >= ylaRaja) {barColors.push("rgba(255, 0, 0, 0.7)"),bordColors.push("rgba(165, 0, 0, 1)")}
+    }
+//Palkkitaulukko jossa palkin värit määräytyvät hinnan  mukaan
+    new Chart("PalkkiTaulu", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                label: 'euro',
+                maxBarThickness: 35,
+                backgroundColor: barColors,
+                borderColor: bordColors,
+                borderWidth: 2,
+                data: yValues
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    gridLines: {
+                        //display: false,
+                        color: "#ffffff" //Väritää tausta ruudukkoviivat valkoisiksi y akselilla
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        //display: false,
+                        color: "#ffffff" //Väritää tausta ruudukkoviivat valkoisiksi x akselilla
+                    }  
+                }]
+            },
+            title: {
+                display: true,
+                text: "Päivittäinen Sähköhinta"
+           
+            },
+            legend: {
+                display: false,
+                labels: {
+                    color: "red",
+                    text: "euro"
+                }
+            }
+
+        }
+        
+    })
+    </script>
+    </div>
+
+        
+        
+            <div style="/*width: 298px;*/flex: 1;width: auto;margin: 0px;margin-top: 15px;margin-right: 15px;margin-left: 15px;background: #77bfa3;border-width: 1px;border-style: solid;border-radius: 5px;margin-bottom: 15px;">
+                <table style="flex: 1;width: 100%;">
+                    <thead class="d-flex flex-row" style="/*width: 300px;*/flex: 1;width: 100%;border-radius: 5px;">
+                        <tr class="d-flex flex-row" style="width: 332px;width: auto;flex: 1;">
+                            
+                            <th style="/*width: auto;*/flex: 1;border-width: 1px;border-style: solid;">päivä</th>
+                            <th style="/*width: auto;*/flex: 1;border-width: 1px;border-style: solid;">Tunti</th>
+                            <th style="/*width: auto;*/flex: 1;border-width: 1px;border-style: solid;">Hinta</th>
+                            
+                        </tr>
+                    </thead>
+                        {{#each tableData}}
+                    <tbody style="width: auto;">
+                        <tr class="d-flex justify-content-between" style="width: 332px;width: auto;">
+                            <td style="flex: 1;border-width: 1px;border-style: solid;">{{day}}</td>
+                            <td style="flex: 1;border-width: 1px;border-style: solid;">{{hour}}</td>
+                            <td style="flex: 1;border-width: 1px;border-style: solid;">{{price}}</td>
+                            
+                            
+                        </tr>
+                        {{/each}}
+             
+                   
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

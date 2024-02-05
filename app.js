@@ -77,7 +77,9 @@ app.get('/hourly', (req, res) => {
     dynamicData.getHourlyPrice().then((resultset) => {
         var tableData = resultset.rows;
         
-        /*let tableHours = [];
+        
+        
+        let tableHours = [];
         let tablePrices = [];
 
         for (i in tableData) {
@@ -91,9 +93,9 @@ app.get('/hourly', (req, res) => {
 
         let jsonTableHours = JSON.stringify(tableHours);
         
-        let jsonTablePrices = JSON.stringify(tablePrices);*/
+        let jsonTablePrices = JSON.stringify(tablePrices);
         
-        let chartPageData = { /*chartHours': jsonTableHours, 'chartPrices': jsonTablePrices,*/ 'tableData': tableData};
+        let chartPageData = { 'chartHours': jsonTableHours, 'chartPrices': jsonTablePrices, 'tableData': tableData};
         
         res.render('hourly', chartPageData);
     })
@@ -126,10 +128,67 @@ app.get('/dildoran_index', (req, res) => {
         console.log(homePageData.price)
         res.render('dildoran_index', homePageData)
     })
-    
-
 })
 
+app.get('/viikkoennuste', (req, res) => {
+    dynamicData.getHourlyPrice().then((resultset) => {
+    
+        var tableData = resultset.rows; 
+        let tableHours = [];
+        let tablePrices = [];
+
+        for (i in tableData) {
+            let hourStr = tableData[i]['hour'];
+            let hourNr = Number(hourStr)
+            tableHours.push(hourNr)
+
+            let priceNr = tableData[i]['price'];
+            tablePrices.push(priceNr)
+        }
+
+        let jsonTableHours = JSON.stringify(tableHours);
+        
+        let jsonTablePrices = JSON.stringify(tablePrices);
+        
+        let ennustedata = { 'chartHours': jsonTableHours, 'chartPrices': jsonTablePrices, 'tableData': tableData};
+        
+        res.render('viikkoennuste', ennustedata);
+      
+})
+})
+
+app.get('/viikkoennusteLottanChart', (req, res) => {
+    dynamicData.getHourlyPrice().then((resultset) => {
+        var tableData = resultset.rows; 
+        
+
+        xhours = JSON.stringify(resultset.rows.map(row => Number(row.hour)));
+        
+        yprices = JSON.stringify(resultset.rows.map(row => row.price)); 
+              
+        let chartPageData = {'hours': xhours, 'prices': yprices, 'tableData': tableData}
+        
+
+    res.render('viikkoennusteLottanChart', chartPageData)
+
+    })
+})
+
+app.get('/chart', (req, res) => {
+    dynamicData.getHourlyPrice().then((resultset) => {
+        var tableData = resultset.rows; 
+        
+
+        xhours = JSON.stringify(resultset.rows.map(row => Number(row.hour)));
+        
+        yprices = JSON.stringify(resultset.rows.map(row => row.price)); 
+              
+        let chartPageData = {'hours': xhours, 'prices': yprices, 'tableData': tableData}
+        
+
+    res.render('chart', chartPageData)
+    })
+})
 // START THE LISTENER
 app.listen(PORT);
 console.log('Server started and it will listen PCP port', PORT);

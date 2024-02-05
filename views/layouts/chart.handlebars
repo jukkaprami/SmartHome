@@ -1,46 +1,256 @@
-{{!-- Load a script to create Chart.js charts this is and old version--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<h1>Sähkön tuntihinnat seuraavalle 24 tunnille</h1>
 
-{{!-- The following paragraph is a placeholder for dynamic data created in a script on this page --}}
-<p id="p1">Tähän tulee kellonaika ja hinta, skriptistä, joka muuttaa sivun sisältöä</p>
+<!-- Valitun teeman oletettu väri 
+<style>
+    body {background-color: rgb(51, 148, 156);} 
+</style> -->
 
-{{!-- Create a named element as a placeholder for the chart.js chart --}}
-<canvas id="hourlyChartChartJS" style="width:100%;max-width:400px"></canvas>
+<table>
+    <tr>
+        <th>Päivä</th>
+        <th>Tunti</th>
+        <th>Hinta (snt/kWh)</th>
+    </tr>
+    {{#each tableData}}
+    <tr><td>{{day}}</td>
+        <td>{{hour}}</td>
+        <td>{{price}}</td>
+    </tr>
+    {{/each}}
+</table>
 
-{{!-- Script will create arrays from rendered JSON data and build a chart using those arrays --}}
-<script>
-const renderedHourArray = {{hours}};
-const renderedPriceArray = {{prices}};
-let exampleRow = "kello "  + String(renderedHourArray[3]) + " hinta on " + String(renderedPriceArray[3] + " snt/kWh");
-document.getElementById("p1").innerHTML = exampleRow;
-const barColors = ["blue", "green", "blue", "red", "red"];
+<!-- Chart.js -->
 
-new Chart("hourlyChartChartJS", {
-    type: "bar",
-    data: {
-        labels: renderedHourArray,
-        datasets: [{
-            backgroundColor: barColors,
-            data: renderedPriceArray
-        }]
-    },
-    options: {
-        legend: { display: false },
-        title: {
-            display: true,
-            text: "Sähkön tuntihinnat"
+<!-- "margin:auto" voi lisätä style osaan jos taulukon haluaa keskittää -->
+<div>
+    <canvas id="sähköhinta" style="width:80%;max-width:700px;height80%;max_height:600px"></canvas> 
+</div>
+
+<div>
+    <canvas id="PalkkiTaulu" style="width:80%;max-width:700px;height80%;max_height:350px"></canvas> 
+</div>
+
+<div>
+    <canvas id="ViivaTaulu" style="width:80%;max-width:700px;height80%;max_height:350px"></canvas> 
+</div>
+
+<div>
+    <canvas id="AlueTaulu" style="width:80%;max-width:700px;height80%;max_height:350px"></canvas> 
+</div>
+
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script> 
+
+<script>   
+    Chart.defaults.global.defaultFontColor = "#000";
+    const xValues = {{hours}};
+    const yValues = {{prices}};
+    // const xValues = [13, 14, 15, 16];
+    // const yValues = [31.44, 32.1, 30.5, 29.99];
+    const ylaRaja = 5;
+    const barColors = [];
+    const bordColors = [];
+
+//Palkkien väritys Y arvon eli hintojen mukaan
+    for(i = 0; i < yValues.length; i++){
+        if(yValues[i] <= 0) {barColors.push("rgba(10, 185, 0, 0.7)"),bordColors.push("rgba(0, 167, 12, 1)")}
+        if(yValues[i] > 0 && yValues[i] <=ylaRaja) {barColors.push("rgb(34, 88, 122, 0.7)"),bordColors.push("rgb(24, 61, 85, 1)")}
+        if(yValues[i] >= ylaRaja) {barColors.push("rgba(255, 0, 0, 0.7)"),bordColors.push("rgba(165, 0, 0, 1)")}
+    }
+
+//Perus palkkitaulukko
+    new Chart("sähköhinta", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                label: 'euro',
+                maxBarThickness: 40,
+                backgroundColor: "rgb(34, 88, 122, 1)",
+                data: yValues
+            }]
         },
-        scales: {
-            y: {
-                Min: 0,
-                suggestedMax: 50
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                }]
+            },
+            title: {
+                display: true,
+                text: "Päivittäinen Sähköhinta"
+           
+            },
+            legend: {
+                display: true,
+                labels: {
+                    color: "red",
+                    text: "euro"
+                }
             }
-        }
-  }
-    
-});
 
+        }
+        
+    })
+
+//Palkkitaulukko jossa palkin värit määräytyvät hinnan  mukaan
+    new Chart("PalkkiTaulu", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                label: 'euro',
+                maxBarThickness: 35,
+                backgroundColor: barColors,
+                borderColor: bordColors,
+                borderWidth: 2,
+                data: yValues
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    gridLines: {
+                        //display: false,
+                        color: "#ffffff" //Väritää tausta ruudukkoviivat valkoisiksi y akselilla
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        //display: false,
+                        color: "#ffffff" //Väritää tausta ruudukkoviivat valkoisiksi x akselilla
+                    }  
+                }]
+            },
+            title: {
+                display: true,
+                text: "Päivittäinen Sähköhinta"
+           
+            },
+            legend: {
+                display: false,
+                labels: {
+                    color: "red",
+                    text: "euro"
+                }
+            }
+
+        }
+        
+    })
+
+//Viivakaavio
+    new Chart("ViivaTaulu", {
+        type: "line",
+        data: {
+            labels: xValues,
+            datasets: [{
+                label: 'euro',
+                fill: false, //Tyhjentää alueen
+                backgroundColor: "rgb(24, 61, 85, 1)",
+                borderColor: "rgb(34, 88, 122, 1)",
+                borderWidth: 2,
+                data: yValues,
+                tension: 0, //Asettaa viivan kaarevuuden
+                //pointRadius: 0
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            title: {
+                display: true,
+                text: "Päivittäinen Sähköhinta"
+           
+            },
+            legend: {
+                display: false,
+                labels: {
+                    color: "red",
+                    text: "euro"
+                }
+            }
+
+        }
+        
+    })
+
+//Aluekaavio
+    new Chart("AlueTaulu", {
+        type: "line",
+        data: {
+            labels: xValues,
+            datasets: [{
+                label: 'euro',
+                fill: true, //Täyttää alueen. 
+                backgroundColor: "rgb(34, 88, 122, 1)",
+                //borderColor: "rgb(24, 61, 85, 1)",
+                //borderWidth: 1,
+                data: yValues,
+                tension: 0,
+                pointRadius: 0  //poistaa pisteet kaavion viivalta
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            title: {
+                display: true,
+                text: "Päivittäinen Sähköhinta"
+           
+            },
+            legend: {
+                display: false,
+                labels: {
+                    color: "red",
+                    text: "euro"
+                }
+            }
+
+        }
+        
+    })
 </script>
 
-<p>{{hours}}</p>
-<p>{{prices}}</p>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<div id="plVersio" style="width:80%;max-width:700px"></div>
+
+<!-- Plotly.js -->
+
+<script>
+    const xArray = {{chartHours}};
+    const yArray = {{chartPrices}};
+    const data = [
+        {
+            x: xArray,
+            y: yArray,
+            type: 'bar',
+            orientation: "v",
+            marker: { color: "rgba(0, 188, 255, 1)" },
+            text: 'euro',
+            name: 'hinta'
+            
+    }];
+
+    const layout = { title: "Sähköhinta"};
+
+    Plotly.newPlot('plVersio', data, layout);
+</script>
