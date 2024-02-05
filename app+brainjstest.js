@@ -190,6 +190,19 @@ app.get('/chart', (req, res) => {
     })
 })
 
+ // Read learning Data
+ const weatherData = {weatherAndTimeData}
+ const priceData = {actualPriceData}
+
+ // read data for predictions
+ const weatherForecast = {weatherForecastAndTime}
+
+// Create new neural network
+
+const net = new brain.recurrent.neuralNetwork();
+
+
+
 // START THE LISTENER
 app.listen(PORT);
 console.log('Server started and it will listen PCP port', PORT);
